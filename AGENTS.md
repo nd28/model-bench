@@ -226,3 +226,11 @@ Two languages on every page, no build step.
    - open the post on a narrow window: no horizontal scroll, the table scrolls
      inside its own box.
 4. If Pages ever stalls: `gh api repos/nd28/model-bench/pages/builds/latest`.
+
+**Cache-busting (important).** Pages serves `assets/*` with `max-age=600`, so a
+change to `style.css` / `app.js` can stay invisible for 10 minutes — the HTML is
+fresh but the browser reuses the old asset. Every page therefore links the
+assets with a version query: `assets/app.js?v=YYYYMMDD-N`. **When you change
+either asset, bump that query in every page (index + all posts) and commit.** A
+new post must copy the current query from the latest post. Adding `?v=` to the
+page URL does not help — the asset URLs are what get cached.
