@@ -27,6 +27,7 @@
     if (btn) { btn.textContent = GLYPH[mode]; btn.setAttribute('aria-label', 'Theme: ' + mode); btn.title = 'Theme: ' + mode; }
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', resolved === 'dark' ? '#0B0B0F' : '#F6F3FA');
+    if (typeof ACCENTS !== 'undefined' && ACCENTS && ACCENTS.length) applyAccent(readAccent());
   }
   guard('theme', applyTheme);
   guard('theme-media', function () {
@@ -48,7 +49,8 @@
     { a: '#5FD3C4', b: '#F06FA3', soft: 'rgba(95,211,196,0.16)' },
     { a: '#0A84FF', b: '#BF5AF2', soft: 'rgba(10,132,255,0.18)' },
     { a: '#BF5AF2', b: '#FF9F0A', soft: 'rgba(191,90,242,0.18)' },
-    { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' }
+    { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' },
+    { a: '#F5F5F7', b: '#98989D', soft: 'rgba(245,245,247,0.16)', light: { a: '#14121B', b: '#6E6E73', soft: 'rgba(20,18,27,0.10)' } }
   ];
   var ACCENT_KEY = 'mb-accent';
   var DARK_INK = '#14121B';
@@ -67,11 +69,15 @@
   function readAccent() { try { var v = parseInt(localStorage.getItem(ACCENT_KEY), 10); return isNaN(v) ? 0 : (v % ACCENTS.length); } catch (e) { return 0; } }
   function applyAccent(i) {
     var p = ACCENTS[i];
-    root.style.setProperty('--accent', p.a);
-    root.style.setProperty('--accent-2', p.b);
-    root.style.setProperty('--accent-soft', p.soft);
-    root.style.setProperty('--accent-ring', p.soft.replace(/0?\.\d+\)/, '0.30)'));
-    root.style.setProperty('--on-accent', readableInk(p.a));
+    var alt = root.getAttribute('data-theme') === 'light' && p.light ? p.light : null;
+    var a = alt ? alt.a : p.a;
+    var b = alt ? alt.b : p.b;
+    var soft = alt ? alt.soft : p.soft;
+    root.style.setProperty('--accent', a);
+    root.style.setProperty('--accent-2', b);
+    root.style.setProperty('--accent-soft', soft);
+    root.style.setProperty('--accent-ring', soft.replace(/0?\.\d+\)/, '0.30)'));
+    root.style.setProperty('--on-accent', readableInk(a));
   }
   guard('accent', function () { applyAccent(readAccent()); });
   window.cycleAccent = function () {

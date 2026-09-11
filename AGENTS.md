@@ -174,7 +174,8 @@ dark, cycled from the top bar).
 
 - **Accents:** one variable repaints everything — `--accent`, `--accent-2`,
   `--accent-soft`. Default is the nd28 pink (`#F06FA3`) with mint second. The
-  accent dot in the top bar cycles a few presets; the choice is remembered.
+  accent dot in the top bar cycles a few presets — the last one is black and
+  white and flips with the theme; the choice is remembered.
 - **Surfaces are glass:** translucent `var(--surface)` + `backdrop-filter:
   blur(var(--blur)) saturate(160%)` + `1px var(--glass-border)`. Use `.glass`.
   The `@supports not` block gives a solid fallback. Glass is an accent, never a
