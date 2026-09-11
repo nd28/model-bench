@@ -391,8 +391,23 @@ td.num, th.num { text-align: right; }
   font: inherit; font-size: 0.76rem; font-weight: 700; text-decoration: none;
 }
 .bb-action.ghost { background: var(--accent-soft); color: var(--accent); }
-.bb-prog { position: absolute; left: 26px; right: 26px; bottom: 7px; height: 3px; border-radius: 999px; background: var(--glass-border); overflow: hidden; }
+/* music-player-style seek bar: a hairline that widens when active */
+/* bar content stays above the seek hit-area */
+.bb-dot, .bb-label, .bb-text, .bb-action { position: relative; z-index: 2; }
+.bb-prog {
+  position: absolute; left: 26px; right: 26px; bottom: 7px; height: 3px;
+  border-radius: 999px; background: var(--glass-border);
+  overflow: visible; z-index: 1; cursor: pointer; touch-action: pan-y;
+  transition: height .22s var(--ease), left .22s var(--ease), right .22s var(--ease), background .22s var(--ease);
+}
+/* invisible, generous tap target around the hairline */
+.bb-prog::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; bottom: -8px; touch-action: pan-y; }
 .bb-prog i { display: block; height: 100%; width: 0%; border-radius: 999px; background: var(--accent); transition: width .1s linear; }
+/* widen while hovered, focused, or being scrubbed */
+.bb-prog:hover,
+.bb-prog:focus-visible,
+.benchbar.scrubbing .bb-prog { height: 9px; left: 14px; right: 14px; }
+.bb-prog:focus-visible { outline: 2px solid var(--accent-ring); outline-offset: 3px; }
 .benchbar.no-prog .bb-prog { display: none; }
 
 /* ── footer ───────────────────────────────────────────────── */
@@ -436,4 +451,7 @@ html[data-lang='hi'] .lang-en { display: none !important; }
   .bb-label { display: none; }
   .bb-text { font-size: 0.82rem; }
   .bb-prog { left: 18px; right: 18px; }
+  .bb-prog:hover,
+  .bb-prog:focus-visible,
+  .benchbar.scrubbing .bb-prog { left: 12px; right: 12px; }
 }

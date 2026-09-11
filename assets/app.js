@@ -85,7 +85,8 @@
   };
 
   /* ── the bench bar: one slot, three jobs ───────────────── */
-  var bar, bbLabel, bbText, bbAction, bbProg;
+  var bar, bbLabel, bbText, bbAction, bbProg, bbTrack;
+  var bbDragging = false;
   var base = { labelEn: '', labelHi: '', textEn: '', textHi: '', actionEn: '', actionHi: '', href: '' };
   var termTimer = null;
   function pick(en, hi) { return root.getAttribute('data-lang') === 'hi' ? (hi || en) : (en || hi); }
@@ -140,6 +141,72 @@
     var max = (h.scrollHeight - h.clientHeight) || 1;
     var pct = Math.max(0, Math.min(100, (h.scrollTop || document.body.scrollTop) / max * 100));
     if (bbProg) bbProg.style.width = pct + '%';
+    if (bbTrack) bbTrack.setAttribute('aria-valuenow', String(Math.round(pct)));
+  }
+
+  /* ── seek: click / drag / keyboard on the progress hairline ─ */
+  function bbSeekPct(pct) {
+    if (!bar || !bar.dataset.prog) return;
+    pct = Math.max(0, Math.min(1, pct));
+    var h = document.documentElement;
+    var max = (h.scrollHeight - h.clientHeight) || 0;
+    var prev = h.style.scrollBehavior;
+    h.style.scrollBehavior = 'auto';   /* seeking is immediate, never smooth */
+    window.scrollTo(0, pct * max);
+    h.style.scrollBehavior = prev || '';
+    bbScroll();
+  }
+  function bbSeekEvent(e) {
+    if (!bbTrack) return;
+    var rect = bbTrack.getBoundingClientRect();
+    if (!rect.width) return;
+    bbSeekPct((e.clientX - rect.left) / rect.width);
+  }
+  function bbScrubStart(e) {
+    if (!bar || !bar.dataset.prog || !bbTrack) return;
+    e.preventDefault();                /* stop text selection while scrubbing */
+    bbDragging = true;
+    bar.classList.add('scrubbing');
+    try { bbTrack.setPointerCapture(e.pointerId); } catch (err) {}
+    bbSeekEvent(e);
+  }
+  function bbScrubMove(e) {
+    if (!bbDragging) return;
+    e.preventDefault();
+    bbSeekEvent(e);
+  }
+  function bbScrubEnd(e) {
+    if (!bbDragging) return;
+    bbDragging = false;
+    bar.classList.remove('scrubbing');
+    try { bbTrack.releasePointerCapture(e.pointerId); } catch (err) {}
+  }
+  function bbSeekKey(e) {
+    if (!bar || !bar.dataset.prog) return;
+    var h = document.documentElement;
+    var max = (h.scrollHeight - h.clientHeight) || 0;
+    var pct = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
+    if (e.key === 'ArrowLeft') pct -= 0.05;
+    else if (e.key === 'ArrowRight') pct += 0.05;
+    else if (e.key === 'Home') pct = 0;
+    else if (e.key === 'End') pct = 1;
+    else return;
+    e.preventDefault();
+    bbSeekPct(pct);
+  }
+  function bbInitSeek() {
+    if (!bbTrack) return;
+    bbTrack.setAttribute('role', 'slider');
+    bbTrack.setAttribute('tabindex', '0');
+    bbTrack.setAttribute('aria-label', 'Reading position');
+    bbTrack.setAttribute('aria-valuemin', '0');
+    bbTrack.setAttribute('aria-valuemax', '100');
+    bbTrack.setAttribute('aria-valuenow', '0');
+    bbTrack.addEventListener('pointerdown', bbScrubStart);
+    bbTrack.addEventListener('pointermove', bbScrubMove);
+    bbTrack.addEventListener('pointerup', bbScrubEnd);
+    bbTrack.addEventListener('pointercancel', bbScrubEnd);
+    bbTrack.addEventListener('keydown', bbSeekKey);
   }
 
   document.addEventListener('click', function (e) {
@@ -217,6 +284,7 @@
       bbText = document.getElementById('bbText');
       bbAction = document.getElementById('bbAction');
       bbProg = document.getElementById('bbProg');
+      bbTrack = bbProg ? bbProg.parentNode : null;
       base.labelEn = bar.getAttribute('data-label-en') || 'today';
       base.labelHi = bar.getAttribute('data-label-hi') || base.labelEn;
       base.textEn = bar.getAttribute('data-status-en') || '';
@@ -224,7 +292,7 @@
       base.actionEn = bar.getAttribute('data-action-en') || '';
       base.actionHi = bar.getAttribute('data-action-hi') || base.actionEn;
       base.href = bar.getAttribute('data-href') || '';
-      if (bar.getAttribute('data-prog')) { bar.dataset.prog = '1'; bar.classList.remove('no-prog'); }
+      if (bar.getAttribute('data-prog')) { bar.dataset.prog = '1'; bar.classList.remove('no-prog'); bbInitSeek(); }
       bbRender();
       requestAnimationFrame(function () { bar.classList.add('enter'); });
       window.addEventListener('scroll', bbScroll, { passive: true });
