@@ -260,6 +260,32 @@ a:hover { text-decoration-thickness: 2px; }
 .badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .05em; padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); text-transform: uppercase; }
 .badge.warn { background: rgba(232,177,92,.16); color: #E8B15C; }
 
+/* ── comparison chart (metric tabs + bars) ────────────────── */
+.compare {
+  border-radius: var(--radius); padding: 14px 14px 12px; margin: 0 0 12px;
+  background: var(--surface); border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(160%); backdrop-filter: blur(var(--blur)) saturate(160%);
+}
+.ctabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 13px; }
+.ctab {
+  font: inherit; font-size: .76rem; font-weight: 650; cursor: pointer;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--glass-border); color: var(--text-dim);
+  transition: transform .12s var(--ease), color .15s var(--ease), background .15s var(--ease);
+}
+.ctab:hover { color: var(--text); }
+.ctab:active { transform: scale(.95); }
+.ctab.on { background: var(--accent); color: #fff; border-color: transparent; }
+.chart { display: grid; gap: 11px; }
+.crow { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
+.crow .nm { font-size: .84rem; font-weight: 650; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crow .val { font-family: var(--mono); font-size: .74rem; font-weight: 700; color: var(--text-dim); white-space: nowrap; }
+.ctrack { grid-column: 1 / -1; position: relative; height: 20px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--glass-border); overflow: hidden; }
+.cfill { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 6px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: .45; transition: width .55s var(--ease); }
+.crow.best .cfill { opacity: 1; }
+.crow.best .val { color: var(--accent); }
+.chint { margin: 12px 0 0; font-family: var(--mono); font-size: .68rem; letter-spacing: .02em; color: var(--faint); }
+
 /* ── tables ───────────────────────────────────────────────── */
 .table-scroll { overflow-x: auto; margin: 0 0 10px; border-radius: var(--radius); border: 1px solid var(--glass-border); background: var(--surface); -webkit-backdrop-filter: blur(var(--blur)) saturate(160%); backdrop-filter: blur(var(--blur)) saturate(160%); -webkit-overflow-scrolling: touch; }
 table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.82rem; }

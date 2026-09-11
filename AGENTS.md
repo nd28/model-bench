@@ -145,6 +145,10 @@ Every post is the same shape as `posts/2026-09-11.html`:
 - **Numbered steps** in a `.flow` — typically: what we did, the models, the
   jobs, the numbers, speed, and what we'd pick.
 - **A results table** in `.table-scroll` (so it never breaks a phone).
+- **Comparison bars** — to compare numbers across models, use the `.compare`
+  component (metric tabs + per-model bars), never a row of cards. Each `.crow`
+  keeps its numbers in `data-in / data-out / data-ctx / data-max`; `app.js`
+  draws the bars and marks the best value per metric.
 - **Captions** under anything a reader might over-read. Say the honest caveat.
 - **Post nav** (previous / next) and the footer.
 

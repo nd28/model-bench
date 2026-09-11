@@ -74,6 +74,7 @@
     var btn = document.getElementById('langBtn');
     if (btn) btn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Hinglish me padho');
     if (typeof bbRender === 'function') bbRender();
+    if (typeof renderAll === 'function') renderAll(currentMetric());
   }
   applyLang(guessLang());
   window.toggleLang = function () {
@@ -165,6 +166,49 @@
     }
   };
 
+  /* ── comparison bars ───────────────────────────────────── */
+  var METRICS = {
+    out: { best: 'min', fmt: function (v) { return '$' + v.toFixed(2); }, hintEn: 'shorter = cheaper · per million output tokens', hintHi: 'chhota = sasta · per million output token' },
+    in:  { best: 'min', fmt: function (v) { return '$' + v.toFixed(2); }, hintEn: 'shorter = cheaper · per million input tokens', hintHi: 'chhota = sasta · per million input token' },
+    ctx: { best: 'max', fmt: function (v) { return v.toFixed(2) + 'M'; }, hintEn: 'longer = bigger context', hintHi: 'lamba = bada context' },
+    max: { best: 'max', fmt: function (v) { return Math.round(v) + 'k'; }, hintEn: 'longer = bigger reply', hintHi: 'lamba = bada jawab' }
+  };
+  var METRIC_KEY = 'mb-metric';
+  function currentMetric() {
+    try { var m = localStorage.getItem(METRIC_KEY); return METRICS[m] ? m : 'out'; } catch (e) { return 'out'; }
+  }
+  function renderCompare(rootEl, metric) {
+    var rows = rootEl.querySelectorAll('.crow');
+    var vals = [];
+    for (var i = 0; i < rows.length; i++) vals.push(parseFloat(rows[i].getAttribute('data-' + metric)) || 0);
+    var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+    for (var j = 0; j < rows.length; j++) {
+      var v = vals[j];
+      var fill = rows[j].querySelector('.cfill');
+      var val = rows[j].querySelector('.val');
+      if (fill) fill.style.width = (max > 0 ? (v / max) * 100 : 0) + '%';
+      if (val) val.textContent = METRICS[metric].fmt(v);
+      var isBest = METRICS[metric].best === 'min' ? (v === min) : (v === max);
+      rows[j].classList.toggle('best', isBest);
+    }
+    var hint = rootEl.querySelector('.chint');
+    if (hint) hint.textContent = (root.getAttribute('data-lang') === 'hi') ? METRICS[metric].hintHi : METRICS[metric].hintEn;
+    var tabs = rootEl.querySelectorAll('.ctab');
+    for (var k = 0; k < tabs.length; k++) tabs[k].classList.toggle('on', tabs[k].getAttribute('data-metric') === metric);
+  }
+  function renderAll(metric) {
+    var cs = document.querySelectorAll('.compare');
+    for (var i = 0; i < cs.length; i++) renderCompare(cs[i], metric);
+  }
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest ? e.target.closest('.ctab') : null;
+    if (!tab) return;
+    var m = tab.getAttribute('data-metric');
+    if (!METRICS[m]) return;
+    try { localStorage.setItem(METRIC_KEY, m); } catch (err) {}
+    renderAll(m);
+  });
+
   /* ── boot ──────────────────────────────────────────────── */
   function boot() {
     bar = document.getElementById('benchbar');
@@ -186,6 +230,7 @@
       window.addEventListener('scroll', bbScroll, { passive: true });
       bbScroll();
     }
+    renderAll(currentMetric());
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

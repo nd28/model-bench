@@ -79,54 +79,47 @@
         <span class="num">02</span>
         <h2><span class="kicker">the line-up</span>The models</h2>
         <div class="prose">
-          <p>Four models were in the main run. All are meant for everyday work, and all are cheap next to the frontier names.</p>
+          <p>Four models were in the main run. All are meant for everyday work, and all are cheap next to the frontier names. Tap a number to switch what the bars measure.</p>
         </div>
-        <div class="cards">
-          <div class="card win">
-            <div class="name">DeepSeek V4.1 Flash <span class="badge">fastest</span></div>
-            <div class="facts">
-              <span>in / out <b>$0.15 / $0.60</b></span>
-              <span><button class="term" type="button" data-tip="Context is how much a model can hold in its head at once: your text plus its reply. Bigger means it can read longer things.">context</button> <b>1.0M</b></span>
-              <span>max reply <b>384k</b></span>
-              <span>images <b>yes</b></span>
-              <span>trains on you <b>no</b></span>
+        <div class="compare">
+          <div class="ctabs">
+            <button class="ctab" type="button" data-metric="out">Output $/M</button>
+            <button class="ctab" type="button" data-metric="in">Input $/M</button>
+            <button class="ctab" type="button" data-metric="ctx">Context</button>
+            <button class="ctab" type="button" data-metric="max">Max reply</button>
+          </div>
+          <div class="chart">
+            <div class="crow" data-in="0.15" data-out="0.60" data-ctx="1.00" data-max="384">
+              <span class="nm">DeepSeek V4.1 Flash</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.10" data-out="0.20" data-ctx="1.05" data-max="131">
+              <span class="nm">Muse Spark 1.3</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.10" data-out="0.20" data-ctx="1.05" data-max="131">
+              <span class="nm">Muse Spark 1.2</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.15" data-out="0.50" data-ctx="1.00" data-max="131">
+              <span class="nm">GLM-5.3-Flash</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
             </div>
           </div>
-          <div class="card">
-            <div class="name">Muse Spark 1.3 <span class="badge">cheapest</span></div>
-            <div class="facts">
-              <span>in / out <b>$0.10 / $0.20</b></span>
-              <span>context <b>1.05M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>images <b>yes</b></span>
-              <span>trains on you <b class="warn">yes</b></span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="name">Muse Spark 1.2</div>
-            <div class="facts">
-              <span>in / out <b>$0.10 / $0.20</b></span>
-              <span>context <b>1.05M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>images <b>yes</b></span>
-              <span>trains on you <b class="warn">yes</b></span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="name">GLM-5.3-Flash</div>
-            <div class="facts">
-              <span>in / out <b>$0.15 / $0.50</b></span>
-              <span>context <b>1.0M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>images <b>yes</b></span>
-              <span>trains on you <b>no</b></span>
-            </div>
-          </div>
+          <p class="chint"></p>
         </div>
-        <div class="prose">
-          <p>Two more were run earlier on lighter jobs and also got everything right: <strong>GLM-5.3</strong> (the full one, not Flash) and <strong>LongCat-2.0</strong>. Both cost more, and neither one reads images.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Model</th><th>Images</th><th>Trains on you</th></tr></thead>
+            <tbody>
+              <tr><td>DeepSeek V4.1 Flash</td><td class="ok">yes</td><td>no</td></tr>
+              <tr><td>Muse Spark 1.3</td><td class="ok">yes</td><td>yes</td></tr>
+              <tr><td>Muse Spark 1.2</td><td class="ok">yes</td><td>yes</td></tr>
+              <tr><td>GLM-5.3-Flash</td><td class="ok">yes</td><td>no</td></tr>
+            </tbody>
+          </table>
         </div>
-        <p class="caption">Prices are per million tokens. <b>In</b> is what you send; <b>out</b> is what the model writes back. Output is the side that grows when a model thinks out loud.</p>
+        <p class="caption">Bars are per million tokens for the two price rows. Two more models ran earlier on lighter jobs and also got everything right — <b>GLM-5.3</b> ($4.40 out) and <b>LongCat-2.0</b> ($1.20 out). Both are far pricier, and neither reads images.</p>
       </section>
 
       <section class="step">
@@ -228,54 +221,47 @@
         <span class="num">02</span>
         <h2><span class="kicker">line-up</span>Model kaun-kaun</h2>
         <div class="prose">
-          <p>Mukhya run me chaar model the. Sab rozmarra ke kaam ke liye hain, aur bade naamoon ke muqable sab saste.</p>
+          <p>Mukhya run me chaar model the. Sab rozmarra ke kaam ke liye hain, aur bade naamoon ke muqable sab saste. Bars badalne ke liye koi bhi number dabao.</p>
         </div>
-        <div class="cards">
-          <div class="card win">
-            <div class="name">DeepSeek V4.1 Flash <span class="badge">sabse tez</span></div>
-            <div class="facts">
-              <span>in / out <b>$0.15 / $0.60</b></span>
-              <span><button class="term" type="button" data-tip="Context matlab model ek waqt me kitna yaad rakh sakta hai — tumhara text aur uska jawab. Bada context matlab lambi cheezein padh sakta hai.">context</button> <b>1.0M</b></span>
-              <span>max reply <b>384k</b></span>
-              <span>image <b>haan</b></span>
-              <span>data train <b>nahi</b></span>
+        <div class="compare">
+          <div class="ctabs">
+            <button class="ctab" type="button" data-metric="out">Output $/M</button>
+            <button class="ctab" type="button" data-metric="in">Input $/M</button>
+            <button class="ctab" type="button" data-metric="ctx">Context</button>
+            <button class="ctab" type="button" data-metric="max">Max reply</button>
+          </div>
+          <div class="chart">
+            <div class="crow" data-in="0.15" data-out="0.60" data-ctx="1.00" data-max="384">
+              <span class="nm">DeepSeek V4.1 Flash</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.10" data-out="0.20" data-ctx="1.05" data-max="131">
+              <span class="nm">Muse Spark 1.3</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.10" data-out="0.20" data-ctx="1.05" data-max="131">
+              <span class="nm">Muse Spark 1.2</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
+            </div>
+            <div class="crow" data-in="0.15" data-out="0.50" data-ctx="1.00" data-max="131">
+              <span class="nm">GLM-5.3-Flash</span><span class="val"></span>
+              <span class="ctrack"><i class="cfill"></i></span>
             </div>
           </div>
-          <div class="card">
-            <div class="name">Muse Spark 1.3 <span class="badge">sabse sasta</span></div>
-            <div class="facts">
-              <span>in / out <b>$0.10 / $0.20</b></span>
-              <span>context <b>1.05M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>image <b>haan</b></span>
-              <span>data train <b class="warn">haan</b></span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="name">Muse Spark 1.2</div>
-            <div class="facts">
-              <span>in / out <b>$0.10 / $0.20</b></span>
-              <span>context <b>1.05M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>image <b>haan</b></span>
-              <span>data train <b class="warn">haan</b></span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="name">GLM-5.3-Flash</div>
-            <div class="facts">
-              <span>in / out <b>$0.15 / $0.50</b></span>
-              <span>context <b>1.0M</b></span>
-              <span>max reply <b>131k</b></span>
-              <span>image <b>haan</b></span>
-              <span>data train <b>nahi</b></span>
-            </div>
-          </div>
+          <p class="chint"></p>
         </div>
-        <div class="prose">
-          <p>Do aur pehle halke kaam pe test kiye the, wo bhi sab sahi: <strong>GLM-5.3</strong> (poora, Flash nahi) aur <strong>LongCat-2.0</strong>. Dono mehnge hain, aur dono image nahi padhte.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Model</th><th>Image</th><th>Data train</th></tr></thead>
+            <tbody>
+              <tr><td>DeepSeek V4.1 Flash</td><td class="ok">haan</td><td>nahi</td></tr>
+              <tr><td>Muse Spark 1.3</td><td class="ok">haan</td><td>haan</td></tr>
+              <tr><td>Muse Spark 1.2</td><td class="ok">haan</td><td>haan</td></tr>
+              <tr><td>GLM-5.3-Flash</td><td class="ok">haan</td><td>nahi</td></tr>
+            </tbody>
+          </table>
         </div>
-        <p class="caption">Daam per million token hai. <b>In</b> = jo tum bhejte ho; <b>out</b> = jo model likhta hai. Output hi aksar badhta hai jab model soch kar likhta hai.</p>
+        <p class="caption">Bars do price rows ke liye per million token hain. Do aur model pehle halke kaam pe test kiye the, wo bhi sab sahi — <b>GLM-5.3</b> ($4.40 out) aur <b>LongCat-2.0</b> ($1.20 out). Dono kaafi mehnge, aur dono image nahi padhte.</p>
       </section>
 
       <section class="step">
