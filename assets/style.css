@@ -344,8 +344,8 @@ td.num, th.num { text-align: right; }
   font: inherit; font-size: 0.76rem; font-weight: 700; text-decoration: none;
 }
 .bb-action.ghost { background: var(--accent-soft); color: var(--accent); }
-.bb-prog { position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px; border-radius: 2px; background: var(--glass-border); overflow: hidden; }
-.bb-prog i { display: block; height: 100%; width: 0%; background: var(--accent); transition: width .1s linear; }
+.bb-prog { position: absolute; left: 26px; right: 26px; bottom: 7px; height: 3px; border-radius: 999px; background: var(--glass-border); overflow: hidden; }
+.bb-prog i { display: block; height: 100%; width: 0%; border-radius: 999px; background: var(--accent); transition: width .1s linear; }
 .benchbar.no-prog .bb-prog { display: none; }
 
 /* ── footer ───────────────────────────────────────────────── */
@@ -388,4 +388,5 @@ html[data-lang='hi'] .lang-en { display: none !important; }
   .benchbar { padding-left: 0.8rem; gap: 0.5rem; }
   .bb-label { display: none; }
   .bb-text { font-size: 0.82rem; }
+  .bb-prog { left: 18px; right: 18px; }
 }
