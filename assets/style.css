@@ -209,7 +209,7 @@ a:hover { text-decoration-thickness: 2px; }
   width: 2px; background: linear-gradient(var(--glass-border-str), transparent);
 }
 .step:last-child::before { display: none; }
-.step .num {
+.step > .num {
   position: absolute; left: 0; top: 1px;
   width: 32px; height: 32px; border-radius: 999px;
   display: grid; place-items: center;
@@ -521,7 +521,7 @@ html[data-lang='hi'] .lang-en { display: none !important; }
 @media (max-width: 560px) {
   body { font-size: 0.98rem; }
   .step { padding-left: 40px; }
-  .step .num { width: 28px; height: 28px; font-size: 11px; }
+  .step > .num { width: 28px; height: 28px; font-size: 11px; }
   .step::before { left: 13px; }
   .cards { grid-template-columns: 1fr; }
   .feed { grid-template-columns: 1fr; }
