@@ -50,9 +50,11 @@
     { a: '#0A84FF', b: '#BF5AF2', soft: 'rgba(10,132,255,0.18)' },
     { a: '#BF5AF2', b: '#FF9F0A', soft: 'rgba(191,90,242,0.18)' },
     { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' },
-    { a: '#F5F5F7', b: '#98989D', soft: 'rgba(245,245,247,0.16)', light: { a: '#14121B', b: '#6E6E73', soft: 'rgba(20,18,27,0.10)' } }
+    { a: '#F5F5F7', b: '#98989D', soft: 'rgba(245,245,247,0.16)', light: { a: '#14121B', b: '#6E6E73', soft: 'rgba(20,18,27,0.10)' }, def: true }
   ];
   var ACCENT_KEY = 'mb-accent';
+  var DEFAULT_ACCENT = 0;
+  for (var ai = 0; ai < ACCENTS.length; ai++) { if (ACCENTS[ai].def) DEFAULT_ACCENT = ai; }
   var DARK_INK = '#14121B';
   function chan(c) {
     c = c / 255;
@@ -66,7 +68,7 @@
     var l = luminance(hex);
     return (1.05 / (l + 0.05)) >= ((l + 0.05) / (luminance(DARK_INK) + 0.05)) ? '#fff' : DARK_INK;
   }
-  function readAccent() { try { var v = parseInt(localStorage.getItem(ACCENT_KEY), 10); return isNaN(v) ? 0 : (v % ACCENTS.length); } catch (e) { return 0; } }
+  function readAccent() { try { var v = parseInt(localStorage.getItem(ACCENT_KEY), 10); return isNaN(v) ? DEFAULT_ACCENT : (v % ACCENTS.length); } catch (e) { return DEFAULT_ACCENT; } }
   function applyAccent(i) {
     var p = ACCENTS[i];
     var alt = root.getAttribute('data-theme') === 'light' && p.light ? p.light : null;
