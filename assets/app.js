@@ -3,6 +3,15 @@
   'use strict';
   var root = document.documentElement;
 
+  /* ── error boundary: one failing subsystem must not sink the rest ── */
+  function guard(name, fn) {
+    try { return fn(); }
+    catch (err) {
+      if (window.console && console.warn) console.warn('[model-bench] ' + name + ' failed:', err);
+      return undefined;
+    }
+  }
+
   /* ── theme: auto → light → dark ────────────────────────── */
   var THEME_KEY = 'mb-theme';
   var MODES = ['auto', 'light', 'dark'];
@@ -19,14 +28,18 @@
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', resolved === 'dark' ? '#0B0B0F' : '#F6F3FA');
   }
-  applyTheme();
-  if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (themeMode() === 'auto') applyTheme(); });
+  guard('theme', applyTheme);
+  guard('theme-media', function () {
+    if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (themeMode() === 'auto') applyTheme(); });
+  });
   window.toggleTheme = function () {
-    var i = MODES.indexOf(themeMode());
-    var next = MODES[(i + 1) % MODES.length];
-    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-    applyTheme();
-    bbSay('theme — ' + next);
+    guard('toggleTheme', function () {
+      var i = MODES.indexOf(themeMode());
+      var next = MODES[(i + 1) % MODES.length];
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+      applyTheme();
+      bbSay('theme — ' + next);
+    });
   };
 
   /* ── accent: one variable repaints the UI ──────────────── */
@@ -46,12 +59,14 @@
     root.style.setProperty('--accent-soft', p.soft);
     root.style.setProperty('--accent-ring', p.soft.replace(/0?\.\d+\)/, '0.30)'));
   }
-  applyAccent(readAccent());
+  guard('accent', function () { applyAccent(readAccent()); });
   window.cycleAccent = function () {
-    var i = (readAccent() + 1) % ACCENTS.length;
-    try { localStorage.setItem(ACCENT_KEY, String(i)); } catch (e) {}
-    applyAccent(i);
-    bbSay('accent — ' + (i + 1) + '/' + ACCENTS.length);
+    guard('cycleAccent', function () {
+      var i = (readAccent() + 1) % ACCENTS.length;
+      try { localStorage.setItem(ACCENT_KEY, String(i)); } catch (e) {}
+      applyAccent(i);
+      bbSay('accent — ' + (i + 1) + '/' + ACCENTS.length);
+    });
   };
 
   /* ── language ──────────────────────────────────────────── */
@@ -75,13 +90,15 @@
     if (btn) btn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Hinglish me padho');
     if (typeof bbRender === 'function') bbRender();
   }
-  applyLang(guessLang());
+  guard('lang', function () { applyLang(guessLang()); });
   window.toggleLang = function () {
-    var next = root.getAttribute('data-lang') === 'hi' ? 'en' : 'hi';
-    try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
-    applyLang(next);
-    bbSay(next === 'hi' ? 'ab Hinglish' : 'now English');
-    renderAll(currentMetric());
+    guard('toggleLang', function () {
+      var next = root.getAttribute('data-lang') === 'hi' ? 'en' : 'hi';
+      try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
+      applyLang(next);
+      bbSay(next === 'hi' ? 'ab Hinglish' : 'now English');
+      renderAll(currentMetric());
+    });
   };
 
   /* ── the bench bar: one slot, three jobs ───────────────── */
@@ -210,27 +227,33 @@
   }
 
   document.addEventListener('click', function (e) {
-    var term = e.target.closest ? e.target.closest('.term') : null;
-    if (term) { e.preventDefault(); bbExplain(term); return; }
-    var act = e.target.closest ? e.target.closest('#bbAction') : null;
-    if (act) {
-      if (act.dataset.mode === 'revert') { bbRevert(); return; }
-      if (base.href) location.href = base.href;
-      else if (typeof window.sharePage === 'function') window.sharePage();
-    }
+    guard('click', function () {
+      var term = e.target.closest ? e.target.closest('.term') : null;
+      if (term) { e.preventDefault(); bbExplain(term); return; }
+      var act = e.target.closest ? e.target.closest('#bbAction') : null;
+      if (act) {
+        if (act.dataset.mode === 'revert') { bbRevert(); return; }
+        if (base.href) location.href = base.href;
+        else if (typeof window.sharePage === 'function') window.sharePage();
+      }
+    });
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') bbRevert(); });
+  document.addEventListener('keydown', function (e) {
+    guard('keydown', function () { if (e.key === 'Escape') bbRevert(); });
+  });
 
   /* ── share ─────────────────────────────────────────────── */
   window.sharePage = function () {
-    var data = { title: document.title, url: location.href };
-    if (navigator.share) { navigator.share(data).catch(function () {}); return; }
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(location.href).then(function () {
-        var b = document.getElementById('shareBtn');
-        if (b) { var t = b.querySelector('.tag'); var old = t.textContent; t.textContent = 'COPIED'; setTimeout(function () { t.textContent = old; }, 1400); }
-      }).catch(function () {});
-    }
+    guard('sharePage', function () {
+      var data = { title: document.title, url: location.href };
+      if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(location.href).then(function () {
+          var b = document.getElementById('shareBtn');
+          if (b) { var t = b.querySelector('.tag'); var old = t.textContent; t.textContent = 'COPIED'; setTimeout(function () { t.textContent = old; }, 1400); }
+        }).catch(function () {});
+      }
+    });
   };
 
   /* ── comparison bars ───────────────────────────────────── */
@@ -242,10 +265,18 @@
   };
   var METRIC_KEY = 'mb-metric';
   function currentMetric() {
-    try { var m = localStorage.getItem(METRIC_KEY); return METRICS[m] ? m : 'out'; } catch (e) { return 'out'; }
+    try {
+      var m = localStorage.getItem(METRIC_KEY);
+      return (typeof METRICS !== 'undefined' && METRICS && METRICS[m]) ? m : 'out';
+    } catch (e) { return 'out'; }
   }
   function renderCompare(rootEl, metric) {
+    if (!rootEl) return;
+    if (typeof METRICS === 'undefined' || !METRICS) return;
+    var spec = METRICS[metric];
+    if (!spec) return;
     var rows = rootEl.querySelectorAll('.crow');
+    if (!rows.length) return;
     var vals = [];
     for (var i = 0; i < rows.length; i++) vals.push(parseFloat(rows[i].getAttribute('data-' + metric)) || 0);
     var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
@@ -254,26 +285,30 @@
       var fill = rows[j].querySelector('.cfill');
       var val = rows[j].querySelector('.val');
       if (fill) fill.style.width = (max > 0 ? (v / max) * 100 : 0) + '%';
-      if (val) val.textContent = METRICS[metric].fmt(v);
-      var isBest = METRICS[metric].best === 'min' ? (v === min) : (v === max);
+      if (val) val.textContent = spec.fmt(v);
+      var isBest = spec.best === 'min' ? (v === min) : (v === max);
       rows[j].classList.toggle('best', isBest);
     }
     var hint = rootEl.querySelector('.chint');
-    if (hint) hint.textContent = (root.getAttribute('data-lang') === 'hi') ? METRICS[metric].hintHi : METRICS[metric].hintEn;
+    if (hint) hint.textContent = (root.getAttribute('data-lang') === 'hi') ? spec.hintHi : spec.hintEn;
     var tabs = rootEl.querySelectorAll('.ctab');
     for (var k = 0; k < tabs.length; k++) tabs[k].classList.toggle('on', tabs[k].getAttribute('data-metric') === metric);
   }
   function renderAll(metric) {
+    if (typeof METRICS === 'undefined' || !METRICS || !METRICS[metric]) return;
     var cs = document.querySelectorAll('.compare');
+    if (!cs.length) return;
     for (var i = 0; i < cs.length; i++) renderCompare(cs[i], metric);
   }
   document.addEventListener('click', function (e) {
-    var tab = e.target.closest ? e.target.closest('.ctab') : null;
-    if (!tab) return;
-    var m = tab.getAttribute('data-metric');
-    if (!METRICS[m]) return;
-    try { localStorage.setItem(METRIC_KEY, m); } catch (err) {}
-    renderAll(m);
+    guard('metric-tab', function () {
+      var tab = e.target.closest ? e.target.closest('.ctab') : null;
+      if (!tab) return;
+      var m = tab.getAttribute('data-metric');
+      if (!METRICS[m]) return;
+      try { localStorage.setItem(METRIC_KEY, m); } catch (err) {}
+      renderAll(m);
+    });
   });
 
   /* ── boot ──────────────────────────────────────────────── */
@@ -298,8 +333,14 @@
       window.addEventListener('scroll', bbScroll, { passive: true });
       bbScroll();
     }
+  }
+  function bootBars() {
     renderAll(currentMetric());
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  function bootAll() {
+    guard('bench-bar', boot);
+    guard('compare', bootBars);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootAll);
+  else bootAll();
 })();
