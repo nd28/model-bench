@@ -51,6 +51,19 @@
     { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' }
   ];
   var ACCENT_KEY = 'mb-accent';
+  var DARK_INK = '#14121B';
+  function chan(c) {
+    c = c / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  }
+  function luminance(hex) {
+    var h = hex.replace('#', '');
+    return 0.2126 * chan(parseInt(h.slice(0, 2), 16)) + 0.7152 * chan(parseInt(h.slice(2, 4), 16)) + 0.0722 * chan(parseInt(h.slice(4, 6), 16));
+  }
+  function readableInk(hex) {
+    var l = luminance(hex);
+    return (1.05 / (l + 0.05)) >= ((l + 0.05) / (luminance(DARK_INK) + 0.05)) ? '#fff' : DARK_INK;
+  }
   function readAccent() { try { var v = parseInt(localStorage.getItem(ACCENT_KEY), 10); return isNaN(v) ? 0 : (v % ACCENTS.length); } catch (e) { return 0; } }
   function applyAccent(i) {
     var p = ACCENTS[i];
@@ -58,6 +71,7 @@
     root.style.setProperty('--accent-2', p.b);
     root.style.setProperty('--accent-soft', p.soft);
     root.style.setProperty('--accent-ring', p.soft.replace(/0?\.\d+\)/, '0.30)'));
+    root.style.setProperty('--on-accent', readableInk(p.a));
   }
   guard('accent', function () { applyAccent(readAccent()); });
   window.cycleAccent = function () {
@@ -88,6 +102,7 @@
     if (l) l.textContent = lang === 'hi' ? 'HI' : 'EN';
     var btn = document.getElementById('langBtn');
     if (btn) btn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Hinglish me padho');
+    if (typeof bbRevert === 'function') bbRevert();
     if (typeof bbRender === 'function') bbRender();
   }
   guard('lang', function () { applyLang(guessLang()); });
@@ -115,13 +130,13 @@
     bbAction.textContent = pick(base.actionEn, base.actionHi);
     bbAction.classList.toggle('ghost', !base.href);
   }
-  function bbSay(msg) {
+  function bbSay(msg, hi) {
     if (!bar) return;
     clearTimeout(termTimer);
     bar.classList.add('term-mode');
     bar.classList.remove('no-prog');
     bbLabel.textContent = 'note';
-    bbText.textContent = msg;
+    bbText.textContent = pick(msg, hi);
     bbAction.textContent = 'ok';
     bbAction.classList.add('ghost');
     bbAction.dataset.mode = 'revert';
@@ -250,7 +265,11 @@
       if (navigator.clipboard) {
         navigator.clipboard.writeText(location.href).then(function () {
           var b = document.getElementById('shareBtn');
-          if (b) { var t = b.querySelector('.tag'); var old = t.textContent; t.textContent = 'COPIED'; setTimeout(function () { t.textContent = old; }, 1400); }
+          var t = b ? b.querySelector('.tag') : null;
+          if (!t) { bbSay('link copied', 'link copy ho gaya'); return; }
+          var old = t.textContent;
+          t.textContent = 'COPIED';
+          setTimeout(function () { t.textContent = old; }, 1400);
         }).catch(function () {});
       }
     });
@@ -277,16 +296,26 @@
     if (!spec) return;
     var rows = rootEl.querySelectorAll('.crow');
     if (!rows.length) return;
-    var vals = [];
-    for (var i = 0; i < rows.length; i++) vals.push(parseFloat(rows[i].getAttribute('data-' + metric)) || 0);
-    var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+    var vals = [], known = [];
+    var max = -Infinity, min = Infinity;
+    for (var i = 0; i < rows.length; i++) {
+      var raw = parseFloat(rows[i].getAttribute('data-' + metric));
+      var ok = isFinite(raw);
+      vals.push(raw);
+      known.push(ok);
+      if (!ok) continue;
+      if (raw > max) max = raw;
+      if (raw < min) min = raw;
+    }
+    if (max === -Infinity) max = 0;
+    if (min === Infinity) min = 0;
     for (var j = 0; j < rows.length; j++) {
-      var v = vals[j];
+      var has = known[j], v = vals[j];
       var fill = rows[j].querySelector('.cfill');
       var val = rows[j].querySelector('.val');
-      if (fill) fill.style.width = (max > 0 ? (v / max) * 100 : 0) + '%';
-      if (val) val.textContent = spec.fmt(v);
-      var isBest = spec.best === 'min' ? (v === min) : (v === max);
+      if (fill) fill.style.width = (has && max > 0 ? (v / max) * 100 : 0) + '%';
+      if (val) val.textContent = has ? spec.fmt(v) : '—';
+      var isBest = has && (spec.best === 'min' ? (v === min) : (v === max));
       rows[j].classList.toggle('best', isBest);
     }
     var hint = rootEl.querySelector('.chint');
@@ -342,6 +371,13 @@
     cmpOverlay = ov;
     return ov;
   }
+  function cmpSetInert(on) {
+    var nodes = document.querySelectorAll('.topbar, main, #benchbar');
+    for (var i = 0; i < nodes.length; i++) {
+      if (on) nodes[i].setAttribute('inert', '');
+      else nodes[i].removeAttribute('inert');
+    }
+  }
   function closeCompare() {
     if (!cmpOverlay) return;
     var panel = cmpOverlay.querySelector('.panel');
@@ -352,6 +388,7 @@
     cmpOverlay.classList.remove('open');
     cmpOverlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('cmp-lock');
+    cmpSetInert(false);
     if (cmpTrigger) {
       cmpTrigger.setAttribute('aria-expanded', 'false');
       try { if (cmpTrigger.focus) cmpTrigger.focus(); } catch (err) {}
@@ -380,6 +417,7 @@
     ov.setAttribute('aria-hidden', 'false');
     ov.classList.add('open');
     document.body.classList.add('cmp-lock');
+    cmpSetInert(true);
     renderAll(currentMetric());
     var close = ov.querySelector('.ov-close');
     if (close && close.focus) close.focus();

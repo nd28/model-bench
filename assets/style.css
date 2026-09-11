@@ -23,6 +23,7 @@
   --accent-2: #5FD3C4;
   --accent-soft: rgba(240, 111, 163, 0.16);
   --accent-ring: rgba(240, 111, 163, 0.30);
+  --on-accent: #fff; /* readable ink on --accent; app.js recomputes per preset */
 
   --radius: 18px;
   --blur: 22px;
@@ -48,7 +49,7 @@
   --surface-2: rgba(38, 38, 50, 0.55);
   --text: #F5F5F7;
   --text-dim: rgba(245, 245, 247, 0.62);
-  --faint: rgba(245, 245, 247, 0.38);
+  --faint: rgba(245, 245, 247, 0.55);
   --glass-border: rgba(255, 255, 255, 0.14);
   --glass-border-str: rgba(255, 255, 255, 0.24);
   --tooltip-bg: rgba(30, 30, 40, 0.92);
@@ -64,7 +65,7 @@
   --surface-2: rgba(255, 255, 255, 0.72);
   --text: #14121B;
   --text-dim: rgba(20, 18, 27, 0.62);
-  --faint: rgba(20, 18, 27, 0.40);
+  --faint: rgba(20, 18, 27, 0.55);
   --glass-border: rgba(20, 18, 27, 0.10);
   --glass-border-str: rgba(20, 18, 27, 0.20);
   --tooltip-bg: rgba(255, 255, 255, 0.95);
@@ -81,7 +82,7 @@
     --surface-2: rgba(255, 255, 255, 0.72);
     --text: #14121B;
     --text-dim: rgba(20, 18, 27, 0.62);
-    --faint: rgba(20, 18, 27, 0.40);
+    --faint: rgba(20, 18, 27, 0.55);
     --glass-border: rgba(20, 18, 27, 0.10);
     --glass-border-str: rgba(20, 18, 27, 0.20);
     --tooltip-bg: rgba(255, 255, 255, 0.95);
@@ -147,16 +148,23 @@ a:hover { text-decoration-thickness: 2px; }
   background: var(--accent-soft); border: 1px solid var(--glass-border);
   font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--accent);
 }
-.brand .nm { font-weight: 750; font-size: 0.92rem; letter-spacing: -0.01em; white-space: nowrap; }
+.brand .nm { font-weight: 700; font-size: 0.92rem; letter-spacing: -0.01em; white-space: nowrap; }
 .brand .nm .hush { color: var(--text-dim); font-weight: 500; }
 .controls { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; }
 .iconbtn {
+  position: relative;
   display: inline-flex; align-items: center; gap: 6px;
   height: 34px; padding: 0 11px; border-radius: 999px;
   background: var(--accent-soft); border: 1px solid var(--glass-border);
-  color: var(--text); font: inherit; font-size: 0.8rem; font-weight: 650;
+  color: var(--text); font: inherit; font-size: 0.8rem; font-weight: 600;
   cursor: pointer; text-decoration: none;
   transition: transform .15s var(--ease), border-color .15s var(--ease);
+}
+/* keep the visible pill small; grow only the tappable area to 44px */
+.iconbtn::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; min-width: 44px; height: 44px;
 }
 .iconbtn:hover { transform: translateY(-1px); border-color: var(--glass-border-str); }
 .iconbtn:active { transform: scale(0.95); }
@@ -164,10 +172,17 @@ a:hover { text-decoration-thickness: 2px; }
 .iconbtn .tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: .05em; }
 .iconbtn.only-icon { padding: 0; width: 34px; justify-content: center; }
 .accent-dot {
+  position: relative;
   width: 26px; height: 26px; border-radius: 50%; flex: none; cursor: pointer;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border: 2px solid var(--glass-border); padding: 0;
   transition: transform .15s var(--ease);
+}
+/* keep the dot 26px; grow only the tappable area to 44px */
+.accent-dot::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px; height: 44px; border-radius: 50%;
 }
 .accent-dot:hover { transform: scale(1.08); }
 .accent-dot:active { transform: scale(0.92); }
@@ -217,7 +232,7 @@ a:hover { text-decoration-thickness: 2px; }
   font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--accent);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
-.step h2 { font-size: 1.3rem; font-weight: 760; letter-spacing: -0.02em; margin: 2px 0 14px; line-height: 1.28; }
+.step h2 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; margin: 2px 0 14px; line-height: 1.28; }
 .step h2 .kicker { display: block; font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
 
 .prose { max-width: var(--measure); }
@@ -233,7 +248,7 @@ a:hover { text-decoration-thickness: 2px; }
   background: var(--accent-soft); border: 1px solid var(--glass-border);
   color: var(--text-dim); font-size: 0.86rem; line-height: 1.55; max-width: var(--measure);
 }
-.caption b { color: var(--text); font-weight: 650; }
+.caption b { color: var(--text); font-weight: 600; }
 
 /* technical term → tap → the bench bar explains it */
 .term {
@@ -253,7 +268,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .card:hover { transform: translateY(-3px); border-color: var(--accent); }
 .card.win { border-color: color-mix(in srgb, var(--ok) 55%, var(--glass-border)); }
-.card .name { font-weight: 750; font-size: 0.98rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card .name { font-weight: 700; font-size: 0.98rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .card .facts { margin: 10px 0 0; display: grid; gap: 4px; font-family: var(--mono); font-size: 0.76rem; color: var(--text-dim); }
 .card .facts span { display: flex; justify-content: space-between; gap: 10px; }
 .card .facts b { color: var(--text); font-weight: 700; }
@@ -268,17 +283,24 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .ctabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 13px; }
 .ctab {
-  font: inherit; font-size: .76rem; font-weight: 650; cursor: pointer;
+  position: relative;
+  font: inherit; font-size: .76rem; font-weight: 600; cursor: pointer;
   padding: 6px 12px; border-radius: 999px;
   background: var(--surface-2); border: 1px solid var(--glass-border); color: var(--text-dim);
   transition: transform .12s var(--ease), color .15s var(--ease), background .15s var(--ease);
 }
+/* keep the pill small; grow only the tappable area to 44px */
+.ctab::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; min-width: 44px; height: 44px;
+}
 .ctab:hover { color: var(--text); }
 .ctab:active { transform: scale(.95); }
-.ctab.on { background: var(--accent); color: #fff; border-color: transparent; }
+.ctab.on { background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .chart { display: grid; gap: 11px; }
 .crow { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
-.crow .nm { font-size: .84rem; font-weight: 650; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crow .nm { font-size: .84rem; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .crow .val { font-family: var(--mono); font-size: .74rem; font-weight: 700; color: var(--text-dim); white-space: nowrap; }
 .ctrack { grid-column: 1 / -1; position: relative; height: 20px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--glass-border); overflow: hidden; }
 .cfill { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 6px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: .45; transition: width .55s var(--ease); }
@@ -381,7 +403,7 @@ td.num, th.num { text-align: right; }
 .bars { display: grid; gap: 10px; margin: 0 0 17px; }
 .bar-row { display: grid; grid-template-columns: minmax(118px, 176px) 1fr; align-items: center; gap: 12px; }
 .bar-row .label { font-size: 0.84rem; color: var(--text-dim); }
-.bar-row .label b { color: var(--text); font-weight: 650; }
+.bar-row .label b { color: var(--text); font-weight: 600; }
 .bar-track { position: relative; height: 26px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--glass-border); overflow: hidden; }
 .bar-fill { position: absolute; inset: 0 auto 0 0; border-radius: 7px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: .9; }
 .bar-track .val { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 0.72rem; font-weight: 700; color: var(--text); }
@@ -403,7 +425,7 @@ td.num, th.num { text-align: right; }
 }
 .postnav a:hover { transform: translateY(-2px); border-color: var(--accent); }
 .postnav .dir { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
-.postnav .ttl { font-weight: 650; font-size: 0.94rem; color: var(--text); }
+.postnav .ttl { font-weight: 600; font-size: 0.94rem; color: var(--text); }
 .postnav .next { text-align: right; align-items: flex-end; }
 .postnav .void { opacity: .5; }
 
@@ -420,7 +442,7 @@ td.num, th.num { text-align: right; }
 .pcard .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pcard .date { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
 .pcard .arrow { color: var(--text-dim); font-family: var(--mono); }
-.pcard .ttl { font-weight: 750; font-size: 1.06rem; letter-spacing: -0.015em; line-height: 1.25; }
+.pcard .ttl { font-weight: 700; font-size: 1.06rem; letter-spacing: -0.015em; line-height: 1.25; }
 .pcard .sub { color: var(--text-dim); font-size: 0.85rem; }
 .pcard .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 .pcard .t { font-family: var(--mono); font-size: 10.5px; color: var(--text-dim); background: var(--accent-soft); border: 1px solid var(--glass-border); border-radius: 999px; padding: 2px 9px; }
@@ -468,7 +490,7 @@ td.num, th.num { text-align: right; }
 .bb-action {
   flex: none; display: inline-flex; align-items: center; gap: 5px;
   height: 30px; padding: 0 12px; border-radius: 999px;
-  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); border: none; cursor: pointer;
   font: inherit; font-size: 0.76rem; font-weight: 700; text-decoration: none;
 }
 .bb-action.ghost { background: var(--accent-soft); color: var(--accent); }

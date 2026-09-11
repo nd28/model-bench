@@ -30,9 +30,12 @@ assets/cascadia-*.woff2 vendored mono font (Inter comes from Google Fonts)
 1. **Run the bench** (see [Bench spec](#bench-spec)). Collect, per model:
    score per job, and wall-clock seconds per job.
 2. **Write `posts/<YYYY-MM-DD>.html`** using the most recent post as the
-   template. Keep its structure, copy, and classes. Do not redesign.
-3. **Add a card to `index.html`** at the top of `.postlist`, with date, title,
-   one-line summary, and model tags.
+   template. Keep its structure, copy, and classes. Do not redesign. Copy its
+   `<meta>` + `og:` tags and update `og:url`, `og:title`, `og:description` and
+   the page title for the new post.
+3. **Update `index.html` and the old post.** Add the new card at the top of
+   `.feed` (date, title, one-line summary, model tags). In the previous post's
+   nav, replace the `.void next` placeholder with a link to the new post.
 4. **Commit and push** to `main`.
 5. **Verify** (see [Publishing](#publishing)).
 
