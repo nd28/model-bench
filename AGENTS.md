@@ -224,7 +224,14 @@ Two languages on every page, no build step.
 ## Publishing
 
 1. `git add -A && git commit -m "post: <date> — <one-line summary>"`
-2. `git push` (Pages builds from `main`, ~30s).
+2. Push with the nd28 token — the default git identity gets 403 on this repo:
+
+   ```sh
+   AUTH=$(printf 'x-access-token:%s' "$(gh auth token -u nd28)" | base64 | tr -d '\n')
+   git -c http.extraHeader="Authorization: Basic $AUTH" push origin main
+   ```
+
+   Pages builds from `main`, ~30s.
 3. Verify:
    - `curl -sI https://nd28.github.io/model-bench/ | head -1`
    - `curl -sI https://nd28.github.io/model-bench/posts/<date>.html | head -1`
