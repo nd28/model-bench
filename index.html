@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0E0E12">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0F">
 <title>model-bench</title>
-<meta name="description" content="A daily note on opencode-go models: what they cost, how fast they are, and what they got wrong. Written in simple words, in English and Hinglish.">
+<meta name="description" content="A daily note on opencode-go models: what they cost, how fast they are, and what they got wrong. Simple words, English and Hinglish.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="model-bench">
 <meta property="og:description" content="Daily notes on cheap opencode-go models. Simple words, English and Hinglish.">
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar glass">
   <div class="inner">
     <a class="brand" href="index.html">
       <span class="mk">mb</span>
@@ -29,9 +29,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg>
         <span class="tag" id="langLabel" data-en="EN" data-hi="HI">EN</span>
       </button>
-      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Light / dark">
-        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
-        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      <button class="accent-dot" id="accentBtn" type="button" onclick="cycleAccent()" aria-label="Change accent colour" title="Accent colour"></button>
+      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Theme: auto">◐</button>
+      <button class="iconbtn only-icon" id="shareBtn" type="button" onclick="sharePage()" aria-label="Share" title="Share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
       </button>
     </div>
   </div>
@@ -51,16 +52,16 @@
     </p>
   </div>
 
-  <ul class="postlist">
+  <ul class="feed">
     <li>
-      <a href="posts/2026-09-11.html">
-        <span class="date">2026-09-11</span>
-        <span>
-          <span class="ttl" data-en="Four cheap models, one boring result" data-hi="Chaar saste model, ek boring result">Four cheap models, one boring result</span>
-          <span class="sub" data-en="Five jobs, four models, every answer right. Price and speed are all that is left." data-hi="Paanch kaam, chaar model, sab jawab sahi. Ab sirf daam aur speed bachi.">Five jobs, four models, every answer right. Price and speed are all that is left.</span>
-          <span class="tags"><span class="t">deepseek-v4.1-flash</span><span class="t">muse-spark-1.3</span><span class="t">glm-5.3-flash</span></span>
+      <a class="pcard" href="posts/2026-09-11.html">
+        <span class="row">
+          <span class="date">2026-09-11</span>
+          <span class="arrow">↗</span>
         </span>
-        <span class="chev">›</span>
+        <span class="ttl" style="view-transition-name: post-2026-09-11"><span class="lang-en">Four cheap models, one boring result</span><span class="lang-hi">Chaar saste model, ek boring result</span></span>
+        <span class="sub" data-en="Five jobs, four models, every answer right. Price and speed are all that is left." data-hi="Paanch kaam, chaar model, sab jawab sahi. Ab sirf daam aur speed bachi.">Five jobs, four models, every answer right. Price and speed are all that is left.</span>
+        <span class="tags"><span class="t">deepseek-v4.1-flash</span><span class="t">muse-spark-1.3</span><span class="t">glm-5.3-flash</span></span>
       </a>
     </li>
   </ul>
@@ -72,6 +73,17 @@
 
 </main>
 
-<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+<div class="benchbar glass no-prog" id="benchbar"
+     data-label-en="latest" data-label-hi="latest"
+     data-status-en="<b>11 Sep</b> — every model passed every check" data-status-hi="<b>11 Sep</b> — har model ne sab sahi kiya"
+     data-action-en="open" data-action-hi="kholo"
+     data-href="posts/2026-09-11.html">
+  <span class="bb-dot"></span>
+  <span class="bb-label" id="bbLabel">latest</span>
+  <span class="bb-text" id="bbText" aria-live="polite"></span>
+  <button class="bb-action" id="bbAction" type="button"></button>
+  <span class="bb-prog"><i id="bbProg"></i></span>
+</div>
+
 </body>
 </html>

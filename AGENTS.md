@@ -138,7 +138,9 @@ Expected: `9  11  13  49  9`.
 
 Every post is the same shape as `posts/2026-09-11.html`:
 
-- **Top bar** — brand, language button, theme button, share button.
+- **Top bar** — brand, language button, accent dot, theme cycle, share.
+- **Bench bar** — the fixed bottom slot (status + term + progress). Copy its
+  `data-*` attributes from the latest post and change only the reading.
 - **Hero** — date pill, one-line title, standfirst, meta row.
 - **Numbered steps** in a `.flow` — typically: what we did, the models, the
   jobs, the numbers, speed, and what we'd pick.
@@ -158,20 +160,40 @@ Rules of voice:
 
 ## Design system (do not reinvent)
 
-Theme-aware, **dark by default**; light via `prefers-color-scheme` and an
-explicit `[data-theme="light"]`. Never force one theme.
+OS-inspired, **liquid glass**. Theme-aware, **dark by default**; light via
+`prefers-color-scheme` and an explicit `[data-theme="light"]`. Never force one
+theme. `app.js` resolves the mode and always sets `data-theme` (auto → light →
+dark, cycled from the top bar).
 
-- Two-tone: pink `--pink-bold` + mint `--mint`. Backgrounds `--bg`, surfaces
-  `--surface`, `--surface-2`, `--surface-3`. Text `--text`, `--muted`, `--faint`.
-- Radii: **24 / 16 / 12** only (`--r-lg`, `--r-md`, `--r-sm`).
+- **Accents:** one variable repaints everything — `--accent`, `--accent-2`,
+  `--accent-soft`. Default is the nd28 pink (`#F06FA3`) with mint second. The
+  accent dot in the top bar cycles a few presets; the choice is remembered.
+- **Surfaces are glass:** translucent `var(--surface)` + `backdrop-filter:
+  blur(var(--blur)) saturate(160%)` + `1px var(--glass-border)`. Use `.glass`.
+  The `@supports not` block gives a solid fallback. Glass is an accent, never a
+  full-screen surface.
+- **Radius:** one `--radius` (18px) for cards and panels; pills are `999px`.
 - Body font **Inter** (Google Fonts). Mono **Cascadia Code**, vendored woff2.
 - Mono is for anything typed: prices, model ids, dates, counts, buttons.
-- The reading flow: `.step` sections carry a number node and a connector line.
-  Keep the vertical rhythm — it is what makes paragraphs read as one piece.
-- Tooltips: a technical term is a
-  `<button class="term" data-tip="plain-words explanation">word</button>`.
-  Keep the explanation jargon-free.
-- Add a new colour or a new radius → don't. Use an existing token.
+- Reading flow: `.step` sections carry a number node and a connector line.
+- Terms: `<button class="term" data-tip="plain-words explanation">word</button>`.
+  The explanation opens in the **bench bar**, not a floating tooltip.
+- Continuity: moving between the index and a post uses cross-document view
+  transitions. Keep the post's `<h1>` and the index card's title sharing a
+  `view-transition-name: post-<date>`.
+- Add a colour or a radius → don't. Use an existing token.
+
+## The bench bar (the signature)
+
+A fixed, glass, bottom slot with three jobs — patterned on One UI's Now Bar:
+
+1. **Status** — the latest reading, from `data-status-en` / `data-status-hi`,
+   plus the action button (open the latest post, or share the current one).
+2. **Term** — tapping a `.term` writes its explanation here. One slot, never two.
+3. **Progress** — on a post (`data-prog="1"`), a hairline fills as you read.
+
+Everything is read from `data-*` attributes on `#benchbar`; `app.js` also
+switches the bar's language from there. Do not add a second floating layer.
 
 ---
 

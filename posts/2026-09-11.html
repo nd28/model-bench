@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0E0E12">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0F">
 <title>Four cheap models, one boring result — model-bench</title>
 <meta name="description" content="We ran five small tests on the cheapest models on opencode-go. All of them passed. What is left is price and speed.">
 <meta property="og:type" content="article">
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar glass">
   <div class="inner">
     <a class="brand" href="../index.html">
       <span class="mk">mb</span>
@@ -29,13 +29,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg>
         <span class="tag" id="langLabel" data-en="EN" data-hi="HI">EN</span>
       </button>
-      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Light / dark">
-        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
-        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
-      </button>
-      <button class="iconbtn" id="shareBtn" type="button" onclick="sharePage()" title="Share">
+      <button class="accent-dot" id="accentBtn" type="button" onclick="cycleAccent()" aria-label="Change accent colour" title="Accent colour"></button>
+      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Theme: auto">◐</button>
+      <button class="iconbtn only-icon" id="shareBtn" type="button" onclick="sharePage()" aria-label="Share" title="Share">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
-        <span class="tag">SHARE</span>
       </button>
     </div>
   </div>
@@ -48,7 +45,7 @@
       <span class="pill">11 Sep 2026</span>
       <span data-en="daily bench · 4 models · 5 tests" data-hi="daily bench · 4 model · 5 test">daily bench · 4 models · 5 tests</span>
     </div>
-    <h1>
+    <h1 style="view-transition-name: post-2026-09-11">
       <span class="lang-en">Four cheap models, one <span class="grad">boring result</span></span>
       <span class="lang-hi">Chaar saste model, ek <span class="grad">boring result</span></span>
     </h1>
@@ -380,6 +377,16 @@
 
 </main>
 
-<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+<div class="benchbar glass" id="benchbar" data-prog="1"
+     data-label-en="today" data-label-hi="aaj"
+     data-status-en="<b>DeepSeek V4.1 Flash</b> 59s · 61/61 right" data-status-hi="<b>DeepSeek V4.1 Flash</b> 59s · 61/61 sahi"
+     data-action-en="share" data-action-hi="share">
+  <span class="bb-dot"></span>
+  <span class="bb-label" id="bbLabel">today</span>
+  <span class="bb-text" id="bbText" aria-live="polite"></span>
+  <button class="bb-action" id="bbAction" type="button"></button>
+  <span class="bb-prog"><i id="bbProg"></i></span>
+</div>
+
 </body>
 </html>

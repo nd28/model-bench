@@ -1,113 +1,157 @@
-/* model-bench — small, no dependencies */
+/* model-bench — OS-inspired behaviour (no dependencies) */
 (function () {
   'use strict';
   var root = document.documentElement;
 
-  /* ── theme ─────────────────────────────────────────────── */
+  /* ── theme: auto → light → dark ────────────────────────── */
   var THEME_KEY = 'mb-theme';
-  function readTheme() {
-    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
-  }
-  function systemDark() {
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-  function paintTheme() {
-    var stored = readTheme();
-    var dark = stored ? stored === 'dark' : systemDark();
-    if (stored) root.setAttribute('data-theme', stored);
-    else root.removeAttribute('data-theme');
+  var MODES = ['auto', 'light', 'dark'];
+  var GLYPH = { auto: '◐', light: '☀', dark: '☾' };
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function readTheme() { try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; } }
+  function themeMode() { var m = readTheme(); return MODES.indexOf(m) >= 0 ? m : 'auto'; }
+  function applyTheme() {
+    var mode = themeMode();
+    var resolved = mode === 'auto' ? (mq && mq.matches ? 'dark' : 'light') : mode;
+    root.setAttribute('data-theme', resolved);
     var btn = document.getElementById('themeBtn');
-    if (btn) {
-      btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-      var sun = btn.querySelector('.i-sun');
-      var moon = btn.querySelector('.i-moon');
-      if (sun) sun.style.display = dark ? 'block' : 'none';
-      if (moon) moon.style.display = dark ? 'none' : 'block';
-    }
+    if (btn) { btn.textContent = GLYPH[mode]; btn.setAttribute('aria-label', 'Theme: ' + mode); btn.title = 'Theme: ' + mode; }
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', dark ? '#0E0E12' : '#FBF6F0');
+    if (meta) meta.setAttribute('content', resolved === 'dark' ? '#0B0B0F' : '#F6F3FA');
   }
-  paintTheme();
-  if (window.matchMedia) {
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    if (mq.addEventListener) mq.addEventListener('change', function () { if (!readTheme()) paintTheme(); });
-  }
+  applyTheme();
+  if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (themeMode() === 'auto') applyTheme(); });
   window.toggleTheme = function () {
-    var stored = readTheme();
-    var dark = stored ? stored === 'dark' : systemDark();
-    try { localStorage.setItem(THEME_KEY, dark ? 'light' : 'dark'); } catch (e) {}
-    paintTheme();
+    var i = MODES.indexOf(themeMode());
+    var next = MODES[(i + 1) % MODES.length];
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    applyTheme();
+    bbSay('theme — ' + next);
+  };
+
+  /* ── accent: one variable repaints the UI ──────────────── */
+  var ACCENTS = [
+    { a: '#F06FA3', b: '#5FD3C4', soft: 'rgba(240,111,163,0.16)' },
+    { a: '#5FD3C4', b: '#F06FA3', soft: 'rgba(95,211,196,0.16)' },
+    { a: '#0A84FF', b: '#BF5AF2', soft: 'rgba(10,132,255,0.18)' },
+    { a: '#BF5AF2', b: '#FF9F0A', soft: 'rgba(191,90,242,0.18)' },
+    { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' }
+  ];
+  var ACCENT_KEY = 'mb-accent';
+  function readAccent() { try { var v = parseInt(localStorage.getItem(ACCENT_KEY), 10); return isNaN(v) ? 0 : (v % ACCENTS.length); } catch (e) { return 0; } }
+  function applyAccent(i) {
+    var p = ACCENTS[i];
+    root.style.setProperty('--accent', p.a);
+    root.style.setProperty('--accent-2', p.b);
+    root.style.setProperty('--accent-soft', p.soft);
+    root.style.setProperty('--accent-ring', p.soft.replace(/0?\.\d+\)/, '0.30)'));
+  }
+  applyAccent(readAccent());
+  window.cycleAccent = function () {
+    var i = (readAccent() + 1) % ACCENTS.length;
+    try { localStorage.setItem(ACCENT_KEY, String(i)); } catch (e) {}
+    applyAccent(i);
+    bbSay('accent — ' + (i + 1) + '/' + ACCENTS.length);
   };
 
   /* ── language ──────────────────────────────────────────── */
   var LANG_KEY = 'mb-lang';
-  function readLang() {
-    try { return localStorage.getItem(LANG_KEY); } catch (e) { return null; }
-  }
+  function readLang() { try { return localStorage.getItem(LANG_KEY); } catch (e) { return null; } }
   function guessLang() {
-    var stored = readLang();
-    if (stored === 'en' || stored === 'hi') return stored;
-    var nav = (navigator.language || 'en').toLowerCase();
-    return nav.indexOf('hi') === 0 ? 'hi' : 'en';
+    var s = readLang();
+    if (s === 'en' || s === 'hi') return s;
+    return (navigator.language || 'en').toLowerCase().indexOf('hi') === 0 ? 'hi' : 'en';
   }
   function applyLang(lang) {
     root.setAttribute('data-lang', lang);
     root.setAttribute('lang', lang === 'hi' ? 'hi' : 'en');
     var nodes = document.querySelectorAll('[data-en][data-hi]');
     for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      el.textContent = lang === 'hi' ? el.getAttribute('data-hi') : el.getAttribute('data-en');
+      nodes[i].textContent = lang === 'hi' ? nodes[i].getAttribute('data-hi') : nodes[i].getAttribute('data-en');
     }
-    var label = document.getElementById('langLabel');
-    if (label) label.textContent = lang === 'hi' ? 'HI' : 'EN';
+    var l = document.getElementById('langLabel');
+    if (l) l.textContent = lang === 'hi' ? 'HI' : 'EN';
     var btn = document.getElementById('langBtn');
     if (btn) btn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Hinglish me padho');
+    if (typeof bbRender === 'function') bbRender();
   }
   applyLang(guessLang());
   window.toggleLang = function () {
     var next = root.getAttribute('data-lang') === 'hi' ? 'en' : 'hi';
     try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
     applyLang(next);
+    bbSay(next === 'hi' ? 'ab Hinglish' : 'now English');
   };
 
-  /* ── technical-term tooltip ────────────────────────────── */
-  var tip = document.getElementById('tooltip');
-  var openTerm = null;
-  function showTip(el) {
-    if (!tip) return;
-    var html = el.getAttribute('data-tip') || '';
-    tip.innerHTML = html;
-    tip.classList.add('show');
-    var r = el.getBoundingClientRect();
-    var tr = tip.getBoundingClientRect();
-    var left = r.left + r.width / 2 - tr.width / 2;
-    left = Math.max(10, Math.min(left, window.innerWidth - tr.width - 10));
-    var top = r.top - tr.height - 10;
-    if (top < 10) top = r.bottom + 10;
-    tip.style.left = left + 'px';
-    tip.style.top = top + 'px';
+  /* ── the bench bar: one slot, three jobs ───────────────── */
+  var bar, bbLabel, bbText, bbAction, bbProg;
+  var base = { labelEn: '', labelHi: '', textEn: '', textHi: '', actionEn: '', actionHi: '', href: '' };
+  var termTimer = null;
+  function pick(en, hi) { return root.getAttribute('data-lang') === 'hi' ? (hi || en) : (en || hi); }
+
+  function bbRender() {
+    if (!bar || !bbLabel) return;
+    bbLabel.textContent = pick(base.labelEn, base.labelHi);
+    bbText.innerHTML = pick(base.textEn, base.textHi);
+    bbAction.textContent = pick(base.actionEn, base.actionHi);
+    bbAction.classList.toggle('ghost', !base.href);
+  }
+  function bbSay(msg) {
+    if (!bar) return;
+    clearTimeout(termTimer);
+    bar.classList.add('term-mode');
+    bar.classList.remove('no-prog');
+    bbLabel.textContent = 'note';
+    bbText.textContent = msg;
+    bbAction.textContent = 'ok';
+    bbAction.classList.add('ghost');
+    bbAction.dataset.mode = 'revert';
+    termTimer = setTimeout(bbRevert, 2600);
+  }
+  function bbExplain(el) {
+    if (!bar) return;
+    clearTimeout(termTimer);
+    var prevOpen = document.querySelector('.term[aria-expanded="true"]');
+    if (prevOpen) prevOpen.setAttribute('aria-expanded', 'false');
     el.setAttribute('aria-expanded', 'true');
-    openTerm = el;
+    bar.classList.add('term-mode');
+    bar.classList.remove('no-prog');
+    bbLabel.textContent = 'term';
+    bbText.innerHTML = el.getAttribute('data-tip') || '';
+    bbAction.textContent = 'got it';
+    bbAction.classList.add('ghost');
+    bbAction.dataset.mode = 'revert';
+    termTimer = setTimeout(bbRevert, 9000);
   }
-  function hideTip() {
-    if (tip) tip.classList.remove('show');
-    if (openTerm) openTerm.setAttribute('aria-expanded', 'false');
-    openTerm = null;
+  function bbRevert() {
+    clearTimeout(termTimer);
+    if (!bar) return;
+    bar.classList.remove('term-mode');
+    if (!bar.dataset.prog) bar.classList.add('no-prog');
+    var open = document.querySelector('.term[aria-expanded="true"]');
+    if (open) open.setAttribute('aria-expanded', 'false');
+    bbAction.dataset.mode = '';
+    bbRender();
   }
+  function bbScroll() {
+    if (!bar || !bar.dataset.prog) return;
+    var h = document.documentElement;
+    var max = (h.scrollHeight - h.clientHeight) || 1;
+    var pct = Math.max(0, Math.min(100, (h.scrollTop || document.body.scrollTop) / max * 100));
+    if (bbProg) bbProg.style.width = pct + '%';
+  }
+
   document.addEventListener('click', function (e) {
     var term = e.target.closest ? e.target.closest('.term') : null;
-    if (term) {
-      e.preventDefault();
-      if (openTerm === term) { hideTip(); return; }
-      hideTip();
-      showTip(term);
-      return;
+    if (term) { e.preventDefault(); bbExplain(term); return; }
+    var act = e.target.closest ? e.target.closest('#bbAction') : null;
+    if (act) {
+      if (act.dataset.mode === 'revert') { bbRevert(); return; }
+      if (base.href) location.href = base.href;
+      else if (typeof window.sharePage === 'function') window.sharePage();
     }
-    if (openTerm && !e.target.closest('#tooltip')) hideTip();
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTip(); });
-  window.addEventListener('resize', hideTip);
-  window.addEventListener('scroll', hideTip, { passive: true });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') bbRevert(); });
 
   /* ── share ─────────────────────────────────────────────── */
   window.sharePage = function () {
@@ -116,8 +160,33 @@
     if (navigator.clipboard) {
       navigator.clipboard.writeText(location.href).then(function () {
         var b = document.getElementById('shareBtn');
-        if (b) { var old = b.getAttribute('data-en'); b.querySelector('.tag').textContent = 'COPIED'; setTimeout(function () { b.querySelector('.tag').textContent = 'SHARE'; }, 1400); }
+        if (b) { var t = b.querySelector('.tag'); var old = t.textContent; t.textContent = 'COPIED'; setTimeout(function () { t.textContent = old; }, 1400); }
       }).catch(function () {});
     }
   };
+
+  /* ── boot ──────────────────────────────────────────────── */
+  function boot() {
+    bar = document.getElementById('benchbar');
+    if (bar) {
+      bbLabel = document.getElementById('bbLabel');
+      bbText = document.getElementById('bbText');
+      bbAction = document.getElementById('bbAction');
+      bbProg = document.getElementById('bbProg');
+      base.labelEn = bar.getAttribute('data-label-en') || 'today';
+      base.labelHi = bar.getAttribute('data-label-hi') || base.labelEn;
+      base.textEn = bar.getAttribute('data-status-en') || '';
+      base.textHi = bar.getAttribute('data-status-hi') || base.textEn;
+      base.actionEn = bar.getAttribute('data-action-en') || '';
+      base.actionHi = bar.getAttribute('data-action-hi') || base.actionEn;
+      base.href = bar.getAttribute('data-href') || '';
+      if (bar.getAttribute('data-prog')) { bar.dataset.prog = '1'; bar.classList.remove('no-prog'); }
+      bbRender();
+      requestAnimationFrame(function () { bar.classList.add('enter'); });
+      window.addEventListener('scroll', bbScroll, { passive: true });
+      bbScroll();
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
