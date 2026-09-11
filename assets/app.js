@@ -74,7 +74,6 @@
     var btn = document.getElementById('langBtn');
     if (btn) btn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Hinglish me padho');
     if (typeof bbRender === 'function') bbRender();
-    if (typeof renderAll === 'function') renderAll(currentMetric());
   }
   applyLang(guessLang());
   window.toggleLang = function () {
@@ -82,6 +81,7 @@
     try { localStorage.setItem(LANG_KEY, next); } catch (e) {}
     applyLang(next);
     bbSay(next === 'hi' ? 'ab Hinglish' : 'now English');
+    renderAll(currentMetric());
   };
 
   /* ── the bench bar: one slot, three jobs ───────────────── */
