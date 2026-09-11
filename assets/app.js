@@ -52,7 +52,7 @@
     { a: '#30D158', b: '#0A84FF', soft: 'rgba(48,209,88,0.18)' },
     { a: '#F5F5F7', b: '#98989D', soft: 'rgba(245,245,247,0.16)', light: { a: '#14121B', b: '#6E6E73', soft: 'rgba(20,18,27,0.10)' }, def: true }
   ];
-  var ACCENT_KEY = 'mb-accent';
+  var ACCENT_KEY = 'mb-accent-v2';
   var DEFAULT_ACCENT = 0;
   for (var ai = 0; ai < ACCENTS.length; ai++) { if (ACCENTS[ai].def) DEFAULT_ACCENT = ai; }
   var DARK_INK = '#14121B';
