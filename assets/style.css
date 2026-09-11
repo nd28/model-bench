@@ -286,6 +286,87 @@ a:hover { text-decoration-thickness: 2px; }
 .crow.best .val { color: var(--accent); }
 .chint { margin: 12px 0 0; font-family: var(--mono); font-size: .68rem; letter-spacing: .02em; color: var(--faint); }
 
+/* the full-screen trigger, pushed to the end of the tab row */
+.ctabs .cmp-full {
+  margin-left: auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 30px; padding: 0 9px;
+  font: inherit; font-size: .82rem; line-height: 1; cursor: pointer;
+  border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--glass-border); color: var(--text-dim);
+  transition: transform .12s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.ctabs .cmp-full:hover { color: var(--text); border-color: var(--glass-border-str); }
+.ctabs .cmp-full:active { transform: scale(.95); }
+.ctabs .cmp-full:focus-visible { outline: 2px solid var(--accent-ring); outline-offset: 2px; }
+
+/* ── full-screen comparison overlay (glass) ───────────────── */
+.cmp-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  opacity: 0; visibility: hidden;
+  transition: opacity .28s var(--ease), visibility .28s var(--ease);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .cmp-overlay { background: rgba(0, 0, 0, 0.74); }
+}
+.cmp-overlay.open { opacity: 1; visibility: visible; }
+.cmp-overlay .panel {
+  width: min(920px, 100%);
+  max-height: 92vh; overflow: auto;
+  border-radius: var(--radius);
+  padding: 18px 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .4);
+  transform: translateY(12px) scale(.98);
+  transition: transform .28s var(--ease);
+}
+.cmp-overlay.open .panel { transform: none; }
+.cmp-overlay .ov-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin: 0 0 14px;
+}
+.cmp-overlay .ov-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim);
+}
+.cmp-overlay .ov-close {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; padding: 0;
+  border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--glass-border);
+  color: var(--text); font: inherit; font-size: 1.15rem; line-height: 1;
+  transition: transform .12s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.cmp-overlay .ov-close:hover { color: var(--accent); border-color: var(--glass-border-str); }
+.cmp-overlay .ov-close:active { transform: scale(.94); }
+.cmp-overlay .ov-close:focus-visible { outline: 2px solid var(--accent-ring); outline-offset: 2px; }
+
+/* the clone sits inside the panel: drop its own glass card */
+.cmp-overlay .compare {
+  background: transparent; border: none; border-radius: 0;
+  padding: 0; margin: 0;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.cmp-overlay .ctab { font-size: .84rem; padding: 8px 15px; }
+.cmp-overlay .crow .nm { font-size: 1rem; }
+.cmp-overlay .crow .val { font-size: .9rem; }
+.cmp-overlay .ctrack { height: 30px; border-radius: 9px; }
+.cmp-overlay .cfill { border-radius: 8px; }
+.cmp-overlay .chint { font-size: .78rem; }
+body.cmp-lock { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cmp-overlay, .cmp-overlay .panel { transition: none; }
+}
+
 /* ── tables ───────────────────────────────────────────────── */
 .table-scroll { overflow-x: auto; margin: 0 0 10px; border-radius: var(--radius); border: 1px solid var(--glass-border); background: var(--surface); -webkit-backdrop-filter: blur(var(--blur)) saturate(160%); backdrop-filter: blur(var(--blur)) saturate(160%); -webkit-overflow-scrolling: touch; }
 table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.82rem; }

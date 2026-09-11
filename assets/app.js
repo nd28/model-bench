@@ -311,6 +311,111 @@
     });
   });
 
+  /* ── full-screen comparison overlay ────────────────────── */
+  var cmpOverlay = null, cmpTrigger = null;
+  function ensureOverlay() {
+    if (cmpOverlay) return cmpOverlay;
+    var ov = document.createElement('div');
+    ov.className = 'cmp-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-label', 'Models comparison, full screen');
+    ov.setAttribute('aria-hidden', 'true');
+    var panel = document.createElement('div');
+    panel.className = 'panel';
+    var head = document.createElement('div');
+    head.className = 'ov-head';
+    var title = document.createElement('div');
+    title.className = 'ov-title';
+    title.textContent = 'Models';
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'ov-close';
+    close.setAttribute('aria-label', 'Close full screen');
+    close.title = 'Close';
+    close.textContent = '×';
+    head.appendChild(title);
+    head.appendChild(close);
+    panel.appendChild(head);
+    ov.appendChild(panel);
+    document.body.appendChild(ov);
+    cmpOverlay = ov;
+    return ov;
+  }
+  function closeCompare() {
+    if (!cmpOverlay) return;
+    var panel = cmpOverlay.querySelector('.panel');
+    if (panel) {
+      var c = panel.querySelector('.compare');
+      if (c && c.parentNode) c.parentNode.removeChild(c);
+    }
+    cmpOverlay.classList.remove('open');
+    cmpOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cmp-lock');
+    if (cmpTrigger) {
+      cmpTrigger.setAttribute('aria-expanded', 'false');
+      try { if (cmpTrigger.focus) cmpTrigger.focus(); } catch (err) {}
+    }
+    cmpTrigger = null;
+  }
+  function openCompare(btn) {
+    var src = btn.closest ? btn.closest('.compare') : null;
+    if (!src) return;
+    var ov = ensureOverlay();
+    var panel = ov.querySelector('.panel');
+    if (!panel) return;
+    var old = panel.querySelector('.compare');
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    var clone = src.cloneNode(true);
+    var extras = clone.querySelectorAll('.cmp-full');
+    for (var i = 0; i < extras.length; i++) {
+      if (extras[i].parentNode) extras[i].parentNode.removeChild(extras[i]);
+    }
+    var ids = clone.querySelectorAll('[id]');
+    for (var j = 0; j < ids.length; j++) ids[j].removeAttribute('id');
+    if (clone.id) clone.removeAttribute('id');
+    panel.appendChild(clone);
+    cmpTrigger = btn;
+    btn.setAttribute('aria-expanded', 'true');
+    ov.setAttribute('aria-hidden', 'false');
+    ov.classList.add('open');
+    document.body.classList.add('cmp-lock');
+    renderAll(currentMetric());
+    var close = ov.querySelector('.ov-close');
+    if (close && close.focus) close.focus();
+  }
+  function injectFullButtons() {
+    var cs = document.querySelectorAll('.compare');
+    for (var i = 0; i < cs.length; i++) {
+      var tabs = cs[i].querySelector('.ctabs');
+      if (!tabs || tabs.querySelector('.cmp-full')) continue;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cmp-full';
+      btn.setAttribute('aria-label', 'Open full screen');
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.title = 'Full screen';
+      btn.textContent = '⤢';
+      tabs.appendChild(btn);
+    }
+  }
+  document.addEventListener('click', function (e) {
+    guard('cmp-full', function () {
+      if (!e.target.closest) return;
+      var full = e.target.closest('.cmp-full');
+      if (full) { e.preventDefault(); openCompare(full); return; }
+      if (!cmpOverlay) return;
+      if (e.target.closest('.ov-close')) { closeCompare(); return; }
+      if (e.target === cmpOverlay) closeCompare();
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    guard('cmp-full', function () {
+      if (e.key === 'Escape' && cmpOverlay && cmpOverlay.classList.contains('open')) closeCompare();
+    });
+  });
+
   /* ── boot ──────────────────────────────────────────────── */
   function boot() {
     bar = document.getElementById('benchbar');
@@ -340,6 +445,7 @@
   function bootAll() {
     guard('bench-bar', boot);
     guard('compare', bootBars);
+    guard('cmp-full', injectFullButtons);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootAll);
   else bootAll();
