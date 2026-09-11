@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0E0E12">
+<title>Four cheap models, one boring result — model-bench</title>
+<meta name="description" content="We ran five small tests on the cheapest models on opencode-go. All of them passed. What is left is price and speed.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Four cheap models, one boring result">
+<meta property="og:description" content="Five small tests, four cheap models, every answer right. The only differences left are price and speed.">
+<meta property="og:url" content="https://nd28.github.io/model-bench/posts/2026-09-11.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/app.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <a class="brand" href="../index.html">
+      <span class="mk">mb</span>
+      <span class="nm">model-bench <span class="hush">· daily notes</span></span>
+    </a>
+    <div class="controls">
+      <button class="iconbtn" id="langBtn" type="button" onclick="toggleLang()" title="Language">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg>
+        <span class="tag" id="langLabel" data-en="EN" data-hi="HI">EN</span>
+      </button>
+      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Light / dark">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+      <button class="iconbtn" id="shareBtn" type="button" onclick="sharePage()" title="Share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
+        <span class="tag">SHARE</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">
+      <span class="pill">11 Sep 2026</span>
+      <span data-en="daily bench · 4 models · 5 tests" data-hi="daily bench · 4 model · 5 test">daily bench · 4 models · 5 tests</span>
+    </div>
+    <h1>
+      <span class="lang-en">Four cheap models, one <span class="grad">boring result</span></span>
+      <span class="lang-hi">Chaar saste model, ek <span class="grad">boring result</span></span>
+    </h1>
+    <p class="standfirst">
+      <span class="lang-en">We gave five small jobs to the cheap models on opencode-go. Every one of them got every job right. So the only things left to compare are price and speed.</span>
+      <span class="lang-hi">opencode-go ke saste models ko paanch chhote kaam diye. Sabne sab sahi kiya. Ab compare karne ke liye sirf daam aur speed bache.</span>
+    </p>
+    <div class="meta">
+      <span><b data-en="Date" data-hi="Taareekh">Date</b> · 2026-09-11</span>
+      <span><b data-en="Models" data-hi="Model">Models</b> · 4</span>
+      <span><b data-en="Tests" data-hi="Test">Tests</b> · 5</span>
+      <span><b data-en="Wrong answers" data-hi="Galat jawab">Wrong answers</b> · 0</span>
+    </div>
+  </div>
+
+  <!-- ───────────── ENGLISH ───────────── -->
+  <div class="lang-en">
+    <div class="flow">
+
+      <section class="step">
+        <span class="num">01</span>
+        <h2><span class="kicker">the setup</span>What we did</h2>
+        <div class="prose">
+          <p><a href="https://opencode.ai" target="_blank" rel="noopener">opencode-go</a> is a service that serves models. You send it words, a model sends words back, and you pay for the size of the words that moved — counted in <button class="term" type="button" data-tip="A token is a small piece of a word. Models count what you send and what they write back in tokens, and you pay per token.">tokens</button>.</p>
+          <p>Models change often and prices move, so we keep a small <button class="term" type="button" data-tip="A bench is a fixed set of small jobs. You run the same jobs again and again, so today&#39;s numbers can be compared with last week&#39;s.">bench</button> and run it now and then. Today we took four models and gave each one five small jobs. Every job has a right answer, so we could simply count how many each model got.</p>
+        </div>
+        <p class="caption"><b>Small test, not a leaderboard.</b> Five jobs cannot describe a whole model. Read this as a smoke check, not a verdict on how smart anything is.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">02</span>
+        <h2><span class="kicker">the line-up</span>The models</h2>
+        <div class="prose">
+          <p>Four models were in the main run. All are meant for everyday work, and all are cheap next to the frontier names.</p>
+        </div>
+        <div class="cards">
+          <div class="card win">
+            <div class="name">DeepSeek V4.1 Flash <span class="badge">fastest</span></div>
+            <div class="facts">
+              <span>in / out <b>$0.15 / $0.60</b></span>
+              <span><button class="term" type="button" data-tip="Context is how much a model can hold in its head at once: your text plus its reply. Bigger means it can read longer things.">context</button> <b>1.0M</b></span>
+              <span>max reply <b>384k</b></span>
+              <span>images <b>yes</b></span>
+              <span>trains on you <b>no</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">Muse Spark 1.3 <span class="badge">cheapest</span></div>
+            <div class="facts">
+              <span>in / out <b>$0.10 / $0.20</b></span>
+              <span>context <b>1.05M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>images <b>yes</b></span>
+              <span>trains on you <b class="warn">yes</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">Muse Spark 1.2</div>
+            <div class="facts">
+              <span>in / out <b>$0.10 / $0.20</b></span>
+              <span>context <b>1.05M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>images <b>yes</b></span>
+              <span>trains on you <b class="warn">yes</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">GLM-5.3-Flash</div>
+            <div class="facts">
+              <span>in / out <b>$0.15 / $0.50</b></span>
+              <span>context <b>1.0M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>images <b>yes</b></span>
+              <span>trains on you <b>no</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>Two more were run earlier on lighter jobs and also got everything right: <strong>GLM-5.3</strong> (the full one, not Flash) and <strong>LongCat-2.0</strong>. Both cost more, and neither one reads images.</p>
+        </div>
+        <p class="caption">Prices are per million tokens. <b>In</b> is what you send; <b>out</b> is what the model writes back. Output is the side that grows when a model thinks out loud.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">03</span>
+        <h2><span class="kicker">the work</span>The five jobs</h2>
+        <div class="prose">
+          <p>The first two are easy. The last three are built to trip a model up.</p>
+          <ul>
+            <li><strong>Three quick questions.</strong> A bat and a ball, the trailing zeros in 100!, and counting a letter in a word.</li>
+            <li><strong>Short code.</strong> Find the longest run of letters with no repeats.</li>
+            <li><strong>A calculator.</strong> Read maths the way people write it — brackets, plus, minus, times, divide, and a minus sign in front.</li>
+            <li><strong>A tiny pattern matcher.</strong> Two rules only: a dot matches one letter, a star repeats whatever came before it.</li>
+            <li><strong>Five harder questions.</strong> The last digit of 3 to the power 2026, numbers with exactly three divisors, and so on.</li>
+          </ul>
+        </div>
+        <p class="caption">Each job was run once per model, from the same prompt. The answers were checked by running them on the machine, not by reading them.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">04</span>
+        <h2><span class="kicker">the numbers</span>What came back</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Job (checks)</th><th class="num">DeepSeek V4.1 Flash</th><th class="num">Muse 1.3</th><th class="num">Muse 1.2</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Quick questions (3)</td><td class="num win-col">3/3 · 12s</td><td class="num">3/3 · 10s</td><td class="num">3/3 · 12s</td></tr>
+              <tr><td>Short code (8)</td><td class="num win-col">8/8 · 11s</td><td class="num">8/8 · 12s</td><td class="num">8/8 · 12s</td></tr>
+              <tr><td>Calculator (23)</td><td class="num win-col">23/23 · 13s</td><td class="num">23/23 · 38s</td><td class="num">23/23 · 43s</td></tr>
+              <tr><td>Pattern matcher (22)</td><td class="num win-col">22/22 · 12s</td><td class="num">22/22 · 14s</td><td class="num">22/22 · 24s</td></tr>
+              <tr><td>Hard questions (5)</td><td class="num win-col">5/5 · 11s</td><td class="num">5/5 · 12s</td><td class="num">5/5 · 16s</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Green is just "best time in that row". Every score in this table is <span class="ok">full marks</span>. There was nothing to separate on correctness.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">05</span>
+        <h2><span class="kicker">the clock</span>Speed, which is all that was left</h2>
+        <div class="prose">
+          <p>With the scores tied, the clock is the only place a winner shows. These are total seconds across all five jobs, one run each.</p>
+        </div>
+        <div class="bars">
+          <div class="bar-row">
+            <div class="label"><b>DeepSeek V4.1 Flash</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%"></div><span class="val">59s</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="label"><b>Muse 1.3</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:80%"></div><span class="val">86s</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="label"><b>Muse 1.2</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%"></div><span class="val">107s</span></div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>On the calculator job the gap opened wide: <strong>13 seconds</strong> against 38 and 43. That is the one job heavy enough to make the difference visible.</p>
+        </div>
+        <p class="caption">One run per number, and times include the <button class="term" type="button" data-tip="Wall-clock time is real time on the clock — the thing you actually wait for — as opposed to time spent only inside the model.">wall clock</button>. A cold start or a busy machine can move these by several seconds. A two-second gap means nothing here.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">06</span>
+        <h2><span class="kicker">the point</span>What we'd pick</h2>
+        <div class="verdict">
+          <ul>
+            <li><span class="mk">🟡</span><span><strong>Quality — no winner today.</strong> Four models, five jobs, every answer right.</span></li>
+            <li><span class="mk">🟢</span><span><strong>Speed — DeepSeek V4.1 Flash</strong>, clearly, once the job gets heavy.</span></li>
+            <li><span class="mk">🔵</span><span><strong>Price — Muse Spark 1.3</strong>, at a third of the output cost.</span></li>
+            <li><span class="mk">🔒</span><span><strong>Privacy — DeepSeek</strong> does not train on your data. Muse does, and it asks first.</span></li>
+          </ul>
+        </div>
+        <div class="prose" style="margin-top:16px">
+          <p>If it has to be one line: keep <strong>DeepSeek V4.1 Flash</strong> as the default, and reach for <strong>Muse Spark 1.3</strong> when the bill matters more than the data.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ───────────── HINGLISH ───────────── -->
+  <div class="lang-hi">
+    <div class="flow">
+
+      <section class="step">
+        <span class="num">01</span>
+        <h2><span class="kicker">setup</span>Humne kya kiya</h2>
+        <div class="prose">
+          <p><a href="https://opencode.ai" target="_blank" rel="noopener">opencode-go</a> ek service hai jo models deti hai. Tum kuch bhejte ho, model jawab deta hai, aur tum words ke size ka paisa dete ho — jise <button class="term" type="button" data-tip="Token ek chhota tukda hota hai word ka. Model jo bhejte ho aur jo likhta hai, dono ko token me ginta hai, aur paisa per token lagta hai.">token</button> kehte hain.</p>
+          <p>Models badalte rehte hain aur daam hilte rehte hain, isliye hum ek chhota <button class="term" type="button" data-tip="Bench matlab kaam ka ek fixed set. Wahi kaam baar-baar chalate hain, taaki aaj ke number pichhle hafte se compare ho sakein.">bench</button> rakhte hain aur beech-beech me chalate hain. Aaj humne chaar model liye aur har ek ko paanch chhote kaam diye. Har kaam ka ek sahi jawab hai, isliye seedha ginti kar sakte hain.</p>
+        </div>
+        <p class="caption"><b>Chhota test, leaderboard nahi.</b> Paanch kaam se poora model describe nahi hota. Ise smoke check samjho, dimaag ka faisla nahi.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">02</span>
+        <h2><span class="kicker">line-up</span>Model kaun-kaun</h2>
+        <div class="prose">
+          <p>Mukhya run me chaar model the. Sab rozmarra ke kaam ke liye hain, aur bade naamoon ke muqable sab saste.</p>
+        </div>
+        <div class="cards">
+          <div class="card win">
+            <div class="name">DeepSeek V4.1 Flash <span class="badge">sabse tez</span></div>
+            <div class="facts">
+              <span>in / out <b>$0.15 / $0.60</b></span>
+              <span><button class="term" type="button" data-tip="Context matlab model ek waqt me kitna yaad rakh sakta hai — tumhara text aur uska jawab. Bada context matlab lambi cheezein padh sakta hai.">context</button> <b>1.0M</b></span>
+              <span>max reply <b>384k</b></span>
+              <span>image <b>haan</b></span>
+              <span>data train <b>nahi</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">Muse Spark 1.3 <span class="badge">sabse sasta</span></div>
+            <div class="facts">
+              <span>in / out <b>$0.10 / $0.20</b></span>
+              <span>context <b>1.05M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>image <b>haan</b></span>
+              <span>data train <b class="warn">haan</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">Muse Spark 1.2</div>
+            <div class="facts">
+              <span>in / out <b>$0.10 / $0.20</b></span>
+              <span>context <b>1.05M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>image <b>haan</b></span>
+              <span>data train <b class="warn">haan</b></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="name">GLM-5.3-Flash</div>
+            <div class="facts">
+              <span>in / out <b>$0.15 / $0.50</b></span>
+              <span>context <b>1.0M</b></span>
+              <span>max reply <b>131k</b></span>
+              <span>image <b>haan</b></span>
+              <span>data train <b>nahi</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>Do aur pehle halke kaam pe test kiye the, wo bhi sab sahi: <strong>GLM-5.3</strong> (poora, Flash nahi) aur <strong>LongCat-2.0</strong>. Dono mehnge hain, aur dono image nahi padhte.</p>
+        </div>
+        <p class="caption">Daam per million token hai. <b>In</b> = jo tum bhejte ho; <b>out</b> = jo model likhta hai. Output hi aksar badhta hai jab model soch kar likhta hai.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">03</span>
+        <h2><span class="kicker">kaam</span>Paanch kaam</h2>
+        <div class="prose">
+          <p>Pehle do aasan hain. Aakhri teen jaan-boojh kar model ko phasane ke liye banaye.</p>
+          <ul>
+            <li><strong>Teen chhote sawaal.</strong> Bat aur ball, 100! ke aakhir me zeros, aur ek word me letter ginti.</li>
+            <li><strong>Chhota code.</strong> Aisi sabse lambi letters ki kataar dhoondo jisme koi letter repeat na ho.</li>
+            <li><strong>Ek calculator.</strong> Maths waise padho jaise log likhte hain — brackets, plus, minus, times, divide, aur aage minus sign.</li>
+            <li><strong>Chhota pattern matcher.</strong> Sirf do niyam: dot ek letter se match karta hai, star pichhli cheez repeat karta hai.</li>
+            <li><strong>Paanch mushkil sawaal.</strong> 3 ki power 2026 ka aakhri digit, theek teen divisor wale number, waghairah.</li>
+          </ul>
+        </div>
+        <p class="caption">Har kaam har model pe ek baar chala. Jawab machine pe chala kar check kiye, aankh se nahi.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">04</span>
+        <h2><span class="kicker">numbers</span>Kya nikla</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Kaam (checks)</th><th class="num">DeepSeek V4.1 Flash</th><th class="num">Muse 1.3</th><th class="num">Muse 1.2</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Aasan sawaal (3)</td><td class="num win-col">3/3 · 12s</td><td class="num">3/3 · 10s</td><td class="num">3/3 · 12s</td></tr>
+              <tr><td>Chhota code (8)</td><td class="num win-col">8/8 · 11s</td><td class="num">8/8 · 12s</td><td class="num">8/8 · 12s</td></tr>
+              <tr><td>Calculator (23)</td><td class="num win-col">23/23 · 13s</td><td class="num">23/23 · 38s</td><td class="num">23/23 · 43s</td></tr>
+              <tr><td>Pattern matcher (22)</td><td class="num win-col">22/22 · 12s</td><td class="num">22/22 · 14s</td><td class="num">22/22 · 24s</td></tr>
+              <tr><td>Mushkil sawaal (5)</td><td class="num win-col">5/5 · 11s</td><td class="num">5/5 · 12s</td><td class="num">5/5 · 16s</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Hara matlab sirf "is line me sabse tez". Scores sab <span class="ok">full marks</span> hain — sahi-galat pe kuch alag nahi hua.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">05</span>
+        <h2><span class="kicker">ghadi</span>Speed — bas wahi bachi</h2>
+        <div class="prose">
+          <p>Scores barabar the, toh ghadi hi batayegi kaun aage hai. Ye paanchon kaam ke total seconds hain, ek-ek run.</p>
+        </div>
+        <div class="bars">
+          <div class="bar-row">
+            <div class="label"><b>DeepSeek V4.1 Flash</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%"></div><span class="val">59s</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="label"><b>Muse 1.3</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:80%"></div><span class="val">86s</span></div>
+          </div>
+          <div class="bar-row">
+            <div class="label"><b>Muse 1.2</b></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%"></div><span class="val">107s</span></div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>Calculator wale kaam pe gap khul gaya: <strong>13 second</strong> vs 38 aur 43. Bas wahi ek kaam itna bhari tha ki farq dikh jaye.</p>
+        </div>
+        <p class="caption">Ek number, ek run. Time me <button class="term" type="button" data-tip="Wall-clock matlab asli ghadi ka time — jitna tum sach me wait karte ho — na ki sirf model ke andar laga time.">wall clock</button> shamil hai. Thandi shuruaat ya busy machine kai second hila sakti hai. Do second ka farq yahan kuch nahi.</p>
+      </section>
+
+      <section class="step">
+        <span class="num">06</span>
+        <h2><span class="kicker">matlab</span>Hum kya chunte</h2>
+        <div class="verdict">
+          <ul>
+            <li><span class="mk">🟡</span><span><strong>Quality — aaj koi winner nahi.</strong> Chaar model, paanch kaam, sab jawab sahi.</span></li>
+            <li><span class="mk">🟢</span><span><strong>Speed — DeepSeek V4.1 Flash</strong>, saaf saaf, jab kaam bhari ho.</span></li>
+            <li><span class="mk">🔵</span><span><strong>Daam — Muse Spark 1.3</strong>, output ke daam ka teesra hissa.</span></li>
+            <li><span class="mk">🔒</span><span><strong>Privacy — DeepSeek</strong> tumhare data pe train nahi karta. Muse karta hai, par pehle poochhta hai.</span></li>
+          </ul>
+        </div>
+        <div class="prose" style="margin-top:16px">
+          <p>Agar ek line me kehna ho: <strong>DeepSeek V4.1 Flash</strong> ko default rakho, aur <strong>Muse Spark 1.3</strong> tab uthao jab bill data se zyada maayne rakhta ho.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <nav class="postnav">
+    <a href="../index.html">
+      <span class="dir" data-en="← all posts" data-hi="← saare posts">← all posts</span>
+      <span class="ttl" data-en="model-bench home" data-hi="model-bench home">model-bench home</span>
+    </a>
+    <div class="void next">
+      <span class="dir" data-en="next post →" data-hi="agla post →">next post →</span>
+      <span class="ttl" data-en="tomorrow" data-hi="kal">tomorrow</span>
+    </div>
+  </nav>
+
+  <footer>
+    <span data-en="run by hand, one session at a time" data-hi="haath se chalaya, ek session ek baar">run by hand, one session at a time</span>
+    <span><a href="https://github.com/nd28/model-bench" target="_blank" rel="noopener">source</a></span>
+  </footer>
+
+</main>
+
+<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+</body>
+</html>

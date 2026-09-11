@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0E0E12">
+<title>model-bench</title>
+<meta name="description" content="A daily note on opencode-go models: what they cost, how fast they are, and what they got wrong. Written in simple words, in English and Hinglish.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="model-bench">
+<meta property="og:description" content="Daily notes on cheap opencode-go models. Simple words, English and Hinglish.">
+<meta property="og:url" content="https://nd28.github.io/model-bench/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <a class="brand" href="index.html">
+      <span class="mk">mb</span>
+      <span class="nm">model-bench <span class="hush">· daily notes</span></span>
+    </a>
+    <div class="controls">
+      <button class="iconbtn" id="langBtn" type="button" onclick="toggleLang()" title="Language">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg>
+        <span class="tag" id="langLabel" data-en="EN" data-hi="HI">EN</span>
+      </button>
+      <button class="iconbtn only-icon" id="themeBtn" type="button" onclick="toggleTheme()" title="Light / dark">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">
+      <span class="pill" data-en="daily" data-hi="roz">daily</span>
+      <span data-en="opencode-go · price · speed · accuracy" data-hi="opencode-go · daam · speed · sahi-galat">opencode-go · price · speed · accuracy</span>
+    </div>
+    <h1><span class="lang-en">What the cheap models <span class="grad">got right today</span></span><span class="lang-hi">Aaj saste models ne <span class="grad">kya sahi kiya</span></span></h1>
+    <p class="standfirst">
+      <span class="lang-en">A small bench of opencode-go models, run now and then. Cheaper models change fast and prices move, so we write down what we saw — in simple words, with the numbers behind it.</span>
+      <span class="lang-hi">opencode-go models ka ek chhota bench, beech-beech me chalaya. Saste models jaldi badalte hain aur daam hilte rehte hain, isliye jo dekha wo likh dete hain — aasan shabdon me, numbers ke saath.</span>
+    </p>
+  </div>
+
+  <ul class="postlist">
+    <li>
+      <a href="posts/2026-09-11.html">
+        <span class="date">2026-09-11</span>
+        <span>
+          <span class="ttl" data-en="Four cheap models, one boring result" data-hi="Chaar saste model, ek boring result">Four cheap models, one boring result</span>
+          <span class="sub" data-en="Five jobs, four models, every answer right. Price and speed are all that is left." data-hi="Paanch kaam, chaar model, sab jawab sahi. Ab sirf daam aur speed bachi.">Five jobs, four models, every answer right. Price and speed are all that is left.</span>
+          <span class="tags"><span class="t">deepseek-v4.1-flash</span><span class="t">muse-spark-1.3</span><span class="t">glm-5.3-flash</span></span>
+        </span>
+        <span class="chev">›</span>
+      </a>
+    </li>
+  </ul>
+
+  <footer>
+    <span data-en="updated when we remember" data-hi="jab yaad aata hai tab update">updated when we remember</span>
+    <span><a href="https://github.com/nd28/model-bench" target="_blank" rel="noopener">source</a></span>
+  </footer>
+
+</main>
+
+<div id="tooltip" role="tooltip" aria-hidden="true"></div>
+</body>
+</html>
